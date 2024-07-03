@@ -1,10 +1,9 @@
-import os
 import pygame
-from components import Button
-class StartButton(Button.Button):
-    def __init__(self, screen:pygame.Surface, WIDTH, HEIGHT):
+from components.Button import Button
+class StartButton(Button):
+    def __init__(self, screen:pygame.Surface, WIDTH, HEIGHT, ENGINEIMAGE):
         super().__init__(screen, "", WIDTH / 2 - 300 / 2,HEIGHT / 2 - 80 / 2, 300,80)
-        self.ENGINEIMAGE = pygame.image.load(os.path.join('assets', 'engine.png'))
+        self.ENGINEIMAGE = ENGINEIMAGE
         self.ENGINEIMAGE = pygame.transform.scale(self.ENGINEIMAGE, (80,80))
         self.ENGINEIMAGERECT = self.ENGINEIMAGE.get_rect()
         self.FONT = pygame.font.SysFont('Comic Sans MS', 30)

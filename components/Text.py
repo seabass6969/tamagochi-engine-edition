@@ -17,6 +17,8 @@ class Text:
         self.x = self.screen.get_width() / 2 - self.TEXTRECT.width / 2
     def draw(self):
         self.screen.blit(self.TEXT, (self.x, self.y))
+    def update(self, x, y):
+        pass
 
     def getVisibility(self) -> bool:
         return self.visible

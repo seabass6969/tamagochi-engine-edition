@@ -1,8 +1,11 @@
 import pygame
+
+from pygame.locals import *
 def multiplication(a: float | int, b: float | int) -> float | int:
     return a * b
 class TutorialText:
     def __init__(self,screen:pygame.Surface, WIDTH, HEIGHT, text: [str]):
+        self.SKIPBUTTON = K_SPACE
         self.screen = screen
         self.WIDTH = WIDTH
         self.HEIGHT = HEIGHT
@@ -24,6 +27,8 @@ class TutorialText:
         for index, i in enumerate(self.text):
             self.screen.blit(i, (10 + 45, self.HEIGHT / 2 - 10 + 45 + multiplication(self.TEXTRECT.height, index)))
 
+    def update(self, mouseX, mouseY):
+        pass
     def getVisibility(self) -> bool:
         return self.visible
 
@@ -34,4 +39,8 @@ class TutorialText:
             self.visible = True
         else:
             self.visible = False
-    
+    def awaitSkip(self, keypress) -> bool:
+        if keypress == self.SKIPBUTTON:
+            return True
+        else:
+            return False

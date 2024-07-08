@@ -1,9 +1,11 @@
 import pygame, sys, os
-from components import Button, StartButton, Text, TutorialText
+from components import Button, StartButton, Text, TutorialText, LogoButton, Grid, Navbar
 from transition import slideLeftToRight
-from dataHandler import dataHandler
+
+# from dataHandler import dataHandler
 from pygame.locals import *
 import ScreenState
+import alert
 
 if __name__ == "__main__":
 
@@ -31,13 +33,16 @@ if __name__ == "__main__":
     WIDTH = 600
     HEIGHT = 700
     # load assets
-    ENGINEIMAGE = pygame.image.load(os.path.join("assets", "engine.png"))
-    data = dataHandler.Datahandler()
+    ENGINE_IMAGE = pygame.image.load(os.path.join("assets", "engine.png"))
+    INFO_IMAGE = pygame.image.load(os.path.join("assets/icon_button", "info.png"))
+    WARN_IMAGE = pygame.image.load(os.path.join("assets/icon_button", "warn.png"))
+    ERROR_IMAGE = pygame.image.load(os.path.join("assets/icon_button", "error.png"))
+    # data = dataHandler.Datahandler()
     fpsClock = pygame.time.Clock()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Tamagotchi Engine edition")
     mouseX, mouseY = 0, 0
-    startButton = StartButton.StartButton(screen, WIDTH, HEIGHT, ENGINEIMAGE)
+    startButton = StartButton.StartButton(screen, WIDTH, HEIGHT, ENGINE_IMAGE)
     tamagotchiText = Text.Text(screen, "Tamagotchi", 0, 60, fontSize=50)
     tamagotchiText.verticallyCentered()
 
@@ -58,6 +63,22 @@ if __name__ == "__main__":
             "(Skip this by pressing space)",
         ],
     )
+
+    infoButton = LogoButton.LogoButton(screen, INFO_IMAGE, "pet info", 50, 50)
+    infoButton1 = LogoButton.LogoButton(screen, INFO_IMAGE, "pet info", 50, 50)
+    infoButton2 = LogoButton.LogoButton(screen, INFO_IMAGE, "pet info", 50, 50)
+    infoButton3 = LogoButton.LogoButton(screen, INFO_IMAGE, "pet info", 50, 50)
+    infoButton4 = LogoButton.LogoButton(screen, INFO_IMAGE, "pet info", 50, 50)
+    infoButton5 = LogoButton.LogoButton(screen, INFO_IMAGE, "pet info", 50, 50, True)
+    Grid.Grid_adjuster(
+        [infoButton, infoButton1, infoButton2, infoButton3, infoButton4, infoButton5],
+        WIDTH / 2 - (infoButton.width * 3 + 10 * 2) / 2,
+        50,
+        10,
+        3,
+    )
+    nav = Navbar.Navbar(screen, WIDTH, HEIGHT)
+
     screenState = "start"
     transition = False
 
@@ -65,10 +86,16 @@ if __name__ == "__main__":
     startScreen = ScreenState.State(
         screen,
         (115, 115, 115),
-        [tamagotchiText, engineEditionText, byCephasText, startButton],
+        [startButton],
+        [tamagotchiText, engineEditionText, byCephasText],
     )
-    introductionScreen = ScreenState.State(screen, (115, 115, 115), [tutorialA])
-    mainScreen = ScreenState.State(screen, (115, 115, 115), [])
+    introductionScreen = ScreenState.State(screen, (115, 115, 115), [], [tutorialA])
+    mainScreen = ScreenState.State(
+        screen,
+        (115, 115, 115),
+        [infoButton, infoButton1, infoButton2, infoButton3, infoButton4, infoButton5],
+        [nav],
+    )
     # hash table that stores the key value of the name of the state to the State
     screenStateTable = {
         "start": startScreen,
@@ -80,7 +107,6 @@ if __name__ == "__main__":
         # place drawing here
         if transition == False:
             screenStateTable.get(screenState).draw()
-            screenStateTable.get(screenState).update(mouseX, mouseY)
 
         # all event
         for event in pygame.event.get():
@@ -90,19 +116,25 @@ if __name__ == "__main__":
                 data.end()
             # mouse event
             elif event.type == MOUSEMOTION:
-                if startButton.getHovered() and startButton.getVisibility():
-                    pygame.mouse.set_cursor(pygame.cursors.broken_x)
-                else:
-                    pygame.mouse.set_cursor(pygame.cursors.arrow)
+                screenStateTable.get(screenState).update(mouseX, mouseY)
+                pass
             elif event.type == MOUSEBUTTONDOWN:
                 # mouse down event with button event
-                if startButton.getHovered() and startButton.getVisibility():
+                if startButton.getHovered():
                     changeState(
                         True,
                         introductionScreen.draw,
                         "intro1",
                         screenStateTable.get(screenState).components,
                         screenStateTable.get("intro1").components,
+                    )
+                elif infoButton5.getHovered():
+                    alert.Alert(
+                        screen,
+                        screenStateTable.get(screenState).draw,
+                        ERROR_IMAGE,
+                        "Error",
+                        "You haven't reached the level yet",
                     )
             elif event.type == MOUSEBUTTONUP:
                 pass
@@ -119,4 +151,4 @@ if __name__ == "__main__":
                         )
         # update the display and the target FPS is 30
         pygame.display.update()
-        fpsClock.tick(30)
+        fpsClock.tick(120)

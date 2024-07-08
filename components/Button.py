@@ -12,13 +12,40 @@ class Button:
         self.hovered = False
         self.visible = True
 
+        self.FONT = pygame.font.SysFont("Comic Sans MS", 30)
+        self.TEXT = self.FONT.render("START", False, (0, 0, 0))
+        self.TEXTRECT = self.TEXT.get_rect()
+
+        self.WIDTH = self.screen.get_width()
+        self.HEIGHT = self.screen.get_height()
+
+    def setXY(self, x1: int | float, y1: int | float):
+        self.x1 = x1
+        self.y1 = y1
+
     def draw(self):
+        if self.getHovered():
+            pygame.draw.rect(
+                self.screen,
+                (0,0,0),
+                (self.x1 - 2, self.y1 - 2, self.width + 4, self.height + 4),
+                border_radius=40,
+            )
         pygame.draw.rect(
             self.screen,
             (217, 217, 217),
             (self.x1, self.y1, self.width, self.height),
             border_radius=40,
         )
+
+        if self.text != "":
+            self.screen.blit(
+                self.TEXT,
+                (
+                    self.x1 + self.width / 2 - self.TEXTRECT.width / 2,
+                    self.y1 + self.height / 2 - self.TEXTRECT.height / 2,
+                ),
+            )
 
     def update(self, x, y):
         if (
@@ -32,10 +59,10 @@ class Button:
             self.hovered = False
 
     def getHovered(self) -> bool:
-        return self.hovered
+        return self.hovered and self.visible
 
-    def getVisibility(self) -> bool:
-        return self.visible
+    # def getVisibility(self) -> bool:
+    #     return self.visible
 
     def setVisibility(self, vis: bool):
         self.visible = vis

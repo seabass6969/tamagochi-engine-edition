@@ -71,9 +71,6 @@ class Button:
     def getHovered(self) -> bool:
         return self.hovered and self.visible
 
-    # def getVisibility(self) -> bool:
-    #     return self.visible
-
     def setVisibility(self, vis: bool):
         self.visible = vis
 

@@ -20,3 +20,4 @@
 - [ ] health (hearts) / level /  
 ## assets
 - [craiyon](https://www.craiyon.com/)
+- [google fonts icon](https://fonts.google.com/icons)

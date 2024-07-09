@@ -15,7 +15,7 @@ class TutorialText:
         self.HEIGHT = HEIGHT
         self.text = text
 
-        self.visible = True
+        self.visible = False
         self.FONT = pygame.font.SysFont("Comic Sans MS", 30)
         self.text = []
         for i in text:

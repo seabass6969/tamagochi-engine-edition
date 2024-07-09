@@ -1,9 +1,9 @@
 import traceback
 import pygame
 import Alert
-from components import BackButton
 from transition import slideLeftToRight
 from asset import IMAGE
+from components import BackButton
 
 
 class State:
@@ -16,23 +16,25 @@ class State:
         components_button: [],
         components_text: [],
         optional_update_component=[],
-        optional_back_button=False,
+        optional_back_button=False
     ):
         self.screen = screen
         self.background_color = background_color
+        self.optional_update_component = optional_update_component
         self.components = []
         self.components.extend(components_text)
         self.components.extend(components_button)
         self.components.extend(optional_update_component)
         self.components_text = components_text
         self.components_button = components_button
-        self.optional_update_component = optional_update_component
         self.name = name
+
         self.optional_back_button = optional_back_button
-        self.backButton = BackButton.BackButton(self.screen, 10, 10)
+        
         if self.optional_back_button:
-            self.components_button.append(self.backButton)
-            self.components.append(self.backButton)
+            self.backbutton = BackButton.BackButton(screen, 10, 10)
+            self.components.append(self.backbutton)
+            self.components_button.append(self.backbutton)
 
     def draw(self):
         self.screen.fill((115, 115, 115))
@@ -50,9 +52,12 @@ class State:
             pygame.mouse.set_cursor(pygame.cursors.broken_x)
         else:
             pygame.mouse.set_cursor(pygame.cursors.arrow)
+    def getBackButtonHover(self) -> bool:
+        if self.optional_back_button:
+            return self.backbutton.getHovered()
+        else:
+            return False
 
-    def getBackButtonhover(self) -> bool:
-        return self.backButton.getHovered()
 
 
 def changeState(
@@ -68,17 +73,20 @@ def changeState(
     try:
         name = nextState.name
         pygame.mouse.set_cursor(pygame.cursors.arrow)
-        componentDisable.extend(previousState.components)
-        componentEnable.extend(nextState.components)
+        componentDisable.extend(previousState.components_button)
+        componentDisable.extend(previousState.components_text)
 
+        componentEnable.extend(nextState.components_button)
+        componentEnable.extend(nextState.components_text)
         for component in componentDisable:
             component.setVisibility(False)
+            component.hovered = False
         for component in componentEnable:
             component.setVisibility(True)
+            component.hovered = False
         if withAnimation:
             slideLeftToRight(screen, fpsClock, nextState.draw)
 
-        print(previousState.name,nextState.name)
         return name
     except AttributeError:
         Alert.Alert(screen, previousState, IMAGE.get("ERROR"), "In Construction", "The Page is in construction!")

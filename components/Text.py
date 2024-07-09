@@ -16,7 +16,7 @@ class Text:
         self.x = x
         self.y = y
         self.color = color
-        self.visible = True
+        self.visible = False
 
         self.FONT = pygame.font.SysFont("Comic Sans MS", fontSize)
         self.TEXT = self.FONT.render(self.text, False, color)

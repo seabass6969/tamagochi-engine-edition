@@ -7,7 +7,7 @@ class Image:
         self.image = image
         self.IMAGERECT = self.image.get_rect()
 
-        self.visible = True
+        self.visible = False
         self.width = self.IMAGERECT.width
         self.height = self.IMAGERECT.height
 

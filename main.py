@@ -11,7 +11,7 @@ from components import (
     TextAnimator,
     Image,
     LevelDisplay,
-    Gap
+    Gap,
 )
 
 # from dataHandler import dataHandler
@@ -113,16 +113,17 @@ if __name__ == "__main__":
         REQUIREMENT.get("RACING_GAME"),
     )
     nav = Navbar.Navbar(screen, WIDTH, HEIGHT)
+    mainScreenButton = [
+        infoButton,
+        marketButton,
+        garageButton,
+        memorygameButton,
+        jumpinggameButton,
+        catchinggameButton,
+        racinggameButton,
+    ]
     Grid.Grid_adjuster(
-        [
-            infoButton,
-            marketButton,
-            garageButton,
-            memorygameButton,
-            jumpinggameButton,
-            catchinggameButton,
-            racinggameButton,
-        ],
+        mainScreenButton,
         WIDTH / 2 - (infoButton.width * 3 + 10 * 2) / 2,
         nav.height + 20,
         10,
@@ -140,14 +141,19 @@ if __name__ == "__main__":
     cashImageScaled = pygame.transform.scale(
         IMAGE.get("CASH"), (healthtextHeight, healthtextHeight)
     )
-    cashImage = Image.Image(screen, 0,0, cashImageScaled)
-    cashText = Text.Text(
-        screen, ": {}".format(gochiPoint), 0, 0, fontSize=26
-    )
+    cashImage = Image.Image(screen, 0, 0, cashImageScaled)
+    cashText = Text.Text(screen, ": {}".format(gochiPoint), 0, 0, fontSize=26)
     leveldisplay = LevelDisplay.LevelDisplay(
         screen, 10, 10, level.getLevel(), level.getProgression(), 150, healthtextHeight
     )
-    navbarItem = [healthImage, healthText,cashImage, cashText, Gap.Gap(screen, 0,0, 20, 10), leveldisplay]
+    navbarItem = [
+        healthImage,
+        healthText,
+        cashImage,
+        cashText,
+        Gap.Gap(screen, 0, 0, 20, 10),
+        leveldisplay,
+    ]
     combined_width = 0
     for i in navbarItem:
         combined_width += i.width
@@ -215,11 +221,14 @@ if __name__ == "__main__":
         "info": infoScreen,
         "market": marketScreen,
     }
+    for component in screenStateTable.get(screenState).components:
+        component.setVisibility(True)
     while True:
         mouseX, mouseY = pygame.mouse.get_pos()
         # place drawing here
         if transition == False:
             screenStateTable.get(screenState).draw()
+            screenStateTable.get(screenState).update(mouseX, mouseY)
 
         # all event
         for event in pygame.event.get():
@@ -229,7 +238,6 @@ if __name__ == "__main__":
                 data.end()
             # mouse event
             elif event.type == MOUSEMOTION:
-                screenStateTable.get(screenState).update(mouseX, mouseY)
                 pass
             elif event.type == MOUSEBUTTONDOWN:
                 # mouse down event with button event
@@ -240,7 +248,7 @@ if __name__ == "__main__":
                             screenStateTable.get("main"),
                             screenStateTable.get(screenState),
                             screen,
-                            fpsClock, 
+                            fpsClock,
                         )
                     else:
                         screenState = ScreenState.changeState(
@@ -251,11 +259,8 @@ if __name__ == "__main__":
                             fpsClock,
                         )
                 if screenState == "main":
-                    for button in mainScreen.components_button:
-                        if (
-                            button.getHovered()
-                            and button.__class__.__name__ == "LogoButton"
-                        ):
+                    for button in mainScreenButton:
+                        if button.getHovered():
                             if button.disabled:
                                 Alert.Alert(
                                     screen,
@@ -266,7 +271,7 @@ if __name__ == "__main__":
                                         button.level_requirement
                                     ),
                                 )
-                            elif not button.disabled:
+                            else:
                                 screenState = ScreenState.changeState(
                                     True,
                                     screenStateTable.get(button.name),
@@ -276,15 +281,15 @@ if __name__ == "__main__":
                                 )
 
                 # backButton listener
-                for states in screenStateTable.values():
-                    if states.getBackButtonhover() and states.name == screenState:
-                        screenState = ScreenState.changeState(
-                            True,
-                            mainScreen,
-                            screenStateTable.get(screenState),
-                            screen,
-                            fpsClock, 
-                        )
+                if screenStateTable.get(screenState).getBackButtonHover():
+                    screenState = ScreenState.changeState(
+                        True,
+                        screenStateTable.get("main"),
+                        screenStateTable.get(screenState),
+                        screen,
+                        fpsClock,
+                    )
+                        
             elif event.type == MOUSEBUTTONUP:
                 pass
             elif event.type == KEYDOWN:
@@ -298,6 +303,7 @@ if __name__ == "__main__":
                             screen,
                             fpsClock,
                         )
+
         # update the display and the target FPS is 30
         pygame.display.update()
         fpsClock.tick(120)

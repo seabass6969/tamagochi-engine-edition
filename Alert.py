@@ -61,6 +61,9 @@ def Alert(
     title_original_x = title.x
     message_original_x = message_text.x
     ok_button_original_x = ok_button.x1
+    components = [title,message_text,ok_button]
+    for component in components:
+        component.setVisibility(True)
     while transition == True:
         currentScreen.draw()
         screen.blit(backdrop, (0, 0))
@@ -77,7 +80,6 @@ def Alert(
         title.draw()
         message_text.draw()
         ok_button.draw()
-
         mouseX, mouseY = pygame.mouse.get_pos()
         ok_button.update(mouseX, mouseY)
         for event in pygame.event.get():

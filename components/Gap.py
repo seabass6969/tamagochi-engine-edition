@@ -9,6 +9,7 @@ class Gap:
         self.width = width
         self.height = height
         self.discoverable = discoverable
+        self.visible = False
 
     def draw(self):
         if self.discoverable:

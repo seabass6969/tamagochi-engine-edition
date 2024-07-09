@@ -19,7 +19,7 @@ class Button:
         self.y1 = y1
         self.height = height
         self.hovered = False
-        self.visible = True
+        self.visible = False
 
         self.FONT = pygame.font.SysFont("Comic Sans MS", 30)
         self.TEXT = self.FONT.render(text, False, (0, 0, 0))

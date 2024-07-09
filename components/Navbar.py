@@ -1,4 +1,5 @@
 import pygame
+from components import Text
 
 
 class Navbar:
@@ -6,6 +7,8 @@ class Navbar:
         self.screen = screen
         self.WIDTH = WIDTH
         self.HEIGHT = HEIGHT
+        self.height = 100
+        
 
     def draw(self):
         
@@ -16,6 +19,7 @@ class Navbar:
             border_bottom_left_radius=20,
             border_bottom_right_radius=20,
         )
+        
 
     def update(self):
         pass

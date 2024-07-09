@@ -21,6 +21,8 @@ class Text:
         self.FONT = pygame.font.SysFont("Comic Sans MS", fontSize)
         self.TEXT = self.FONT.render(self.text, False, color)
         self.TEXTRECT = self.TEXT.get_rect()
+        self.width = self.TEXTRECT.width
+        self.height = self.TEXTRECT.height
 
     def verticallyCentered(self):
         self.x = self.screen.get_width() / 2 - self.TEXTRECT.width / 2
@@ -30,6 +32,10 @@ class Text:
 
     def update(self, x, y):
         pass
+
+    def setXY(self, x: int | float, y: int | float):
+        self.x = x
+        self.y = y
 
     def getVisibility(self) -> bool:
         return self.visible

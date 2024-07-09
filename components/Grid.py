@@ -3,7 +3,7 @@ from components import Button, Text
 
 
 def Grid_adjuster(
-    items: [Button.Button],
+    items: [],
     x1: int | float,
     y1: int | float,
     gap: int | float,

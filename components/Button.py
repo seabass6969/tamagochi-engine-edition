@@ -2,7 +2,16 @@ import pygame
 
 
 class Button:
-    def __init__(self, screen: pygame.Surface, text, x1, y1, width, height):
+    def __init__(
+        self,
+        screen: pygame.Surface,
+        text,
+        x1,
+        y1,
+        width,
+        height,
+        background_color=(217, 217, 217),
+    ):
         self.screen = screen
         self.text = text
         self.x1 = x1
@@ -13,11 +22,12 @@ class Button:
         self.visible = True
 
         self.FONT = pygame.font.SysFont("Comic Sans MS", 30)
-        self.TEXT = self.FONT.render("START", False, (0, 0, 0))
+        self.TEXT = self.FONT.render(text, False, (0, 0, 0))
         self.TEXTRECT = self.TEXT.get_rect()
 
         self.WIDTH = self.screen.get_width()
         self.HEIGHT = self.screen.get_height()
+        self.background_color = background_color
 
     def setXY(self, x1: int | float, y1: int | float):
         self.x1 = x1
@@ -27,13 +37,13 @@ class Button:
         if self.getHovered():
             pygame.draw.rect(
                 self.screen,
-                (0,0,0),
+                (0, 0, 0),
                 (self.x1 - 2, self.y1 - 2, self.width + 4, self.height + 4),
                 border_radius=40,
             )
         pygame.draw.rect(
             self.screen,
-            (217, 217, 217),
+            self.background_color,
             (self.x1, self.y1, self.width, self.height),
             border_radius=40,
         )

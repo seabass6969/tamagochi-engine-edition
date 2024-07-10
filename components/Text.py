@@ -30,7 +30,7 @@ class Text:
     def draw(self):
         self.screen.blit(self.TEXT, (self.x, self.y))
 
-    def update(self, x, y):
+    def update(self, x, y, data):
         pass
 
     def setXY(self, x: int | float, y: int | float):

@@ -81,7 +81,7 @@ def Alert(
         message_text.draw()
         ok_button.draw()
         mouseX, mouseY = pygame.mouse.get_pos()
-        ok_button.update(mouseX, mouseY)
+        ok_button.update(mouseX, mouseY, data="")
         for event in pygame.event.get():
             if event.type == QUIT:
                 transition = False

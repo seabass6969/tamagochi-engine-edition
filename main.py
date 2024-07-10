@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame, sys, random
 from components import (
     Button,
     StartButton,
@@ -12,6 +12,7 @@ from components import (
     Image,
     LevelDisplay,
     Gap,
+    InfoPageConstructor
 )
 
 # from dataHandler import dataHandler
@@ -20,6 +21,7 @@ import ScreenState
 import Alert
 from Level import Level, levelUnlockCheck, REQUIREMENT
 from asset import IMAGE
+from dataHandler import dataHandler
 
 
 WIDTH = 600
@@ -27,19 +29,12 @@ HEIGHT = 700
 # load assets
 if __name__ == "__main__":
 
-    def numberAdjuster(number: int, degits: int) -> str:
-        num = str(number)
-        return (degits - len(num)) * "0" + num
-
     screenState = "start"
     transition = False
     pygame.init()
-    # data = dataHandler.Datahandler()
+    data = dataHandler.Datahandler()
 
-    level = Level(1, 0.1)
-    gochiPoint = 0
-    health = 10  # the max health is 10
-    tutorial = False  # false means done
+    # gotchiPoint = data.getGotchiPoint()
 
     fpsClock = pygame.time.Clock()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -89,7 +84,9 @@ if __name__ == "__main__":
         "Jumping Rope",
         50,
         50,
-        levelUnlockCheck(level.getLevel(), REQUIREMENT.get("JUMPING_ROPE_GAME")),
+        levelUnlockCheck(
+            data.getLevel().getLevel(), REQUIREMENT.get("JUMPING_ROPE_GAME")
+        ),
         REQUIREMENT.get("JUMPING_ROPE_GAME"),
     )
     catchinggameButton = LogoButton.LogoButton(
@@ -99,7 +96,7 @@ if __name__ == "__main__":
         "Catch",
         50,
         50,
-        levelUnlockCheck(level.getLevel(), REQUIREMENT.get("CATCH_GAME")),
+        levelUnlockCheck(data.getLevel().getLevel(), REQUIREMENT.get("CATCH_GAME")),
         REQUIREMENT.get("CATCH_GAME"),
     )
     racinggameButton = LogoButton.LogoButton(
@@ -109,8 +106,17 @@ if __name__ == "__main__":
         "Racing",
         50,
         50,
-        levelUnlockCheck(level.getLevel(), REQUIREMENT.get("RACING_GAME")),
+        levelUnlockCheck(data.getLevel().getLevel(), REQUIREMENT.get("RACING_GAME")),
         REQUIREMENT.get("RACING_GAME"),
+    )
+
+    testButton = LogoButton.LogoButton(
+        screen,
+        "test",
+        IMAGE.get("TEST"),
+        "TEST ONLY",
+        50,
+        50,
     )
     nav = Navbar.Navbar(screen, WIDTH, HEIGHT)
     mainScreenButton = [
@@ -121,6 +127,7 @@ if __name__ == "__main__":
         jumpinggameButton,
         catchinggameButton,
         racinggameButton,
+        testButton,
     ]
     Grid.Grid_adjuster(
         mainScreenButton,
@@ -129,41 +136,12 @@ if __name__ == "__main__":
         10,
         3,
     )
-
-    healthText = Text.Text(
-        screen, ": {} / 10 ".format(numberAdjuster(health, 2)), 0, 0, fontSize=26
-    )
-    healthtextHeight = healthText.TEXTRECT.height
-    healthImageScaled = pygame.transform.scale(
-        IMAGE.get("HEART"), (healthtextHeight, healthtextHeight)
-    )
-    healthImage = Image.Image(screen, 10, 10, healthImageScaled)
-    cashImageScaled = pygame.transform.scale(
-        IMAGE.get("CASH"), (healthtextHeight, healthtextHeight)
-    )
-    cashImage = Image.Image(screen, 0, 0, cashImageScaled)
-    cashText = Text.Text(screen, ": {}".format(gochiPoint), 0, 0, fontSize=26)
-    leveldisplay = LevelDisplay.LevelDisplay(
-        screen, 10, 10, level.getLevel(), level.getProgression(), 150, healthtextHeight
-    )
-    navbarItem = [
-        healthImage,
-        healthText,
-        cashImage,
-        cashText,
-        Gap.Gap(screen, 0, 0, 20, 10),
-        leveldisplay,
-    ]
-    combined_width = 0
-    for i in navbarItem:
-        combined_width += i.width
-    Grid.Grid_adjuster(
-        navbarItem,
-        WIDTH / 2 - (combined_width + 8 * len(navbarItem)) / 2,
-        30,
-        8,
-        999999,
-    )
+    # Info Page:
+    infopageConstructor = InfoPageConstructor.InfoPageConstructor(screen, data)
+    # Bug page:
+    hurtButton = Button.Button(screen, "hurt", 20, nav.height + 10, 100, 100)
+    gotchiButton = Button.Button(screen, "gotchi", 20, nav.height + 20 + 100, 100, 100)
+    emotionButton = Button.Button(screen, "emotion", 20, nav.height + 30 + 200, 100, 100)
 
     # defining screen state drawing action
     startScreen = ScreenState.State(
@@ -176,42 +154,45 @@ if __name__ == "__main__":
     introductionScreen = ScreenState.State(
         screen, "intro1", (115, 115, 115), [], [tutorialA]
     )
-    realNavbarItem = [nav]
-    realNavbarItem.extend(navbarItem)
     mainScreen = ScreenState.State(
         screen,
         "main",
         (115, 115, 115),
-        [
-            # all menu button
-            infoButton,
-            marketButton,
-            garageButton,
-            memorygameButton,
-            jumpinggameButton,
-            catchinggameButton,
-            racinggameButton,
-        ],
-        realNavbarItem,
-        optional_update_component=[leveldisplay],
+        mainScreenButton,  # all menu button
+        [],
+        optional_navbar=True,
+        optional_navbar_options=data,
     )
     infoScreen = ScreenState.State(
         screen,
         "info",
         (115, 115, 115),
         [],
-        realNavbarItem,
-        optional_update_component=[leveldisplay],
-        optional_back_button=True
+        [infopageConstructor],
+        optional_update_component=[infopageConstructor],
+        optional_navbar=True,
+        optional_navbar_options=data,
+        optional_back_button=True,
     )
     marketScreen = ScreenState.State(
         screen,
         "market",
         (115, 115, 115),
         [],
-        realNavbarItem,
-        optional_update_component=[leveldisplay],
-        optional_back_button=True
+        [],
+        optional_navbar=True,
+        optional_navbar_options=data,
+        optional_back_button=True,
+    )
+    testScreen = ScreenState.State(
+        screen,
+        "test",
+        (115, 115, 115),
+        [hurtButton, gotchiButton, emotionButton],
+        [],
+        optional_navbar=True,
+        optional_navbar_options=data,
+        optional_back_button=True,
     )
     # hash table that stores the key value of the name of the state to the State
     screenStateTable = {
@@ -220,15 +201,17 @@ if __name__ == "__main__":
         "main": mainScreen,
         "info": infoScreen,
         "market": marketScreen,
+        "test": testScreen,
     }
     for component in screenStateTable.get(screenState).components:
         component.setVisibility(True)
+
     while True:
         mouseX, mouseY = pygame.mouse.get_pos()
         # place drawing here
         if transition == False:
             screenStateTable.get(screenState).draw()
-            screenStateTable.get(screenState).update(mouseX, mouseY)
+            screenStateTable.get(screenState).update(mouseX, mouseY, data)
 
         # all event
         for event in pygame.event.get():
@@ -242,7 +225,7 @@ if __name__ == "__main__":
             elif event.type == MOUSEBUTTONDOWN:
                 # mouse down event with button event
                 if startButton.getHovered():
-                    if tutorial == False:
+                    if data.getDoneTutorial() == False:
                         screenState = ScreenState.changeState(
                             True,
                             screenStateTable.get("main"),
@@ -279,7 +262,15 @@ if __name__ == "__main__":
                                     screen,
                                     fpsClock,
                                 )
-
+                elif screenState == "test":
+                    if gotchiButton.getHovered():
+                        data.increaseGotchiPoint(10)
+                    if hurtButton.getHovered():
+                        data.decreaseHealth(1)
+                    if emotionButton.getHovered():
+                        listEmotion = ["happy", "sad", "ill", "mid", "angry"]
+                        data.setEmotion(random.choice(listEmotion))
+                        print(data.getEmotion())
                 # backButton listener
                 if screenStateTable.get(screenState).getBackButtonHover():
                     screenState = ScreenState.changeState(
@@ -289,7 +280,7 @@ if __name__ == "__main__":
                         screen,
                         fpsClock,
                     )
-                        
+
             elif event.type == MOUSEBUTTONUP:
                 pass
             elif event.type == KEYDOWN:
@@ -303,6 +294,7 @@ if __name__ == "__main__":
                             screen,
                             fpsClock,
                         )
+                        data.setDoneTutorial(True)
 
         # update the display and the target FPS is 30
         pygame.display.update()

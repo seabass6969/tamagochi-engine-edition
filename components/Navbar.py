@@ -21,7 +21,7 @@ class Navbar:
         )
         
 
-    def update(self):
+    def update(self, x, y, data):
         pass
     
     def getVisibility(self) -> bool:

@@ -1,6 +1,16 @@
+import random
 import pygame
 import math
 from components import Text
+JOKE = [
+    "lightning mcqueen",
+    "engine drinks oil",
+    "carbon dioxide",
+    "ENGINE",
+    "VROOOOOOOOOOOM"
+
+]
+
 class TextAnimator(Text.Text):
     def __init__(
         self,
@@ -8,7 +18,7 @@ class TextAnimator(Text.Text):
         x_original: float,
         y_original: float
     ):
-        self.memetext = "engine drinks oil"
+        self.memetext = random.choice(JOKE)
         super().__init__(screen, self.memetext, x_original, y_original, (255, 215, 0), 18)
         self.TEXT = pygame.transform.rotate(self.TEXT, -45)
         self.TEXTRECT = self.TEXT.get_rect()

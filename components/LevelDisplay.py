@@ -1,5 +1,6 @@
 import pygame, math
 from components.Text import Text
+from dataHandler import dataHandler
 
 
 class LevelDisplay(Text):
@@ -55,7 +56,7 @@ class LevelDisplay(Text):
         self.y = y
 
 
-    def update(self, x, y):
+    def update(self, x, y, data: dataHandler.Datahandler):
         if (
             x >= self.x
             and x <= (self.x + self.width)

@@ -1,4 +1,5 @@
 import pygame
+from dataHandler import dataHandler
 
 
 class Button:
@@ -57,7 +58,7 @@ class Button:
                 ),
             )
 
-    def update(self, x, y):
+    def update(self, x, y, data: dataHandler.Datahandler):
         if (
             x >= self.x1
             and x <= (self.x1 + self.width)

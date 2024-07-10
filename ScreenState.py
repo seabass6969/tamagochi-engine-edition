@@ -3,8 +3,12 @@ import pygame
 import Alert
 from transition import slideLeftToRight
 from asset import IMAGE
-from components import BackButton
+from components import BackButton, NavbarConstructor
+import Level
+from dataHandler import dataHandler
 
+
+DEFAULT_NAVBAR_OPTIONS = {"health": 10, "gotchiPoint": 0, "level": Level.Level(1,0.1)}
 
 class State:
 
@@ -16,7 +20,9 @@ class State:
         components_button: [],
         components_text: [],
         optional_update_component=[],
-        optional_back_button=False
+        optional_back_button=False,
+        optional_navbar=False,
+        optional_navbar_options: dataHandler.Datahandler = ""
     ):
         self.screen = screen
         self.background_color = background_color
@@ -29,25 +35,38 @@ class State:
         self.components_button = components_button
         self.name = name
 
+        self.optional_navbar = optional_navbar
+        
+        if self.optional_navbar:
+            self.navbarConstructor = NavbarConstructor.NavbarConstructor(self.screen, optional_navbar_options.getHealth(), optional_navbar_options.getGotchiPoint(), optional_navbar_options.getLevel())
+            # self.optional_update_component.extend(self.navbarConstructor.components)
+        
         self.optional_back_button = optional_back_button
         
         if self.optional_back_button:
             self.backbutton = BackButton.BackButton(screen, 10, 10)
-            self.components.append(self.backbutton)
+            # self.components.append(self.backbutton)
             self.components_button.append(self.backbutton)
+        
 
     def draw(self):
         self.screen.fill((115, 115, 115))
         for component in self.components:
             component.draw()
+        if self.optional_navbar:
+            self.navbarConstructor.draw()
+        if self.optional_back_button:
+            self.backbutton.draw()
 
-    def update(self, x: int, y: int):
+    def update(self, x: int, y: int, data: dataHandler.Datahandler):
         hovered_list = []
         for component in self.components_button:
-            component.update(x, y)
+            component.update(x, y, data)
             hovered_list.append(component.getHovered())
         for component in self.optional_update_component:
-            component.update(x, y)
+            component.update(x, y, data)
+        if self.optional_navbar:
+            self.navbarConstructor.update(x,y, data)
         if True in hovered_list:
             pygame.mouse.set_cursor(pygame.cursors.broken_x)
         else:
@@ -75,9 +94,11 @@ def changeState(
         pygame.mouse.set_cursor(pygame.cursors.arrow)
         componentDisable.extend(previousState.components_button)
         componentDisable.extend(previousState.components_text)
+        componentDisable.extend(previousState.optional_update_component)
 
         componentEnable.extend(nextState.components_button)
         componentEnable.extend(nextState.components_text)
+        componentEnable.extend(nextState.optional_update_component)
         for component in componentDisable:
             component.setVisibility(False)
             component.hovered = False
@@ -90,6 +111,7 @@ def changeState(
         return name
     except AttributeError:
         Alert.Alert(screen, previousState, IMAGE.get("ERROR"), "In Construction", "The Page is in construction!")
+        print(traceback.format_exc())
         return previousState.name
     except Exception as e:
         Alert.Alert(screen, previousState, IMAGE.get("ERROR"), "Danger Zone", "The Page is broken!")

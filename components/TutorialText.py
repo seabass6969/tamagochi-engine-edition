@@ -52,7 +52,7 @@ class TutorialText:
                 ),
             )
 
-    def update(self, mouseX, mouseY):
+    def update(self, mouseX, mouseY, data):
         pass
 
     def getVisibility(self) -> bool:

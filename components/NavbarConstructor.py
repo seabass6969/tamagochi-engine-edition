@@ -3,11 +3,7 @@ from asset import IMAGE
 from components import Text, Image, Gap, LevelDisplay, Grid, Navbar
 import Level
 from dataHandler import dataHandler
-
-
-def numberAdjuster(number: int, degits: int) -> str:
-    num = str(number)
-    return (degits - len(num)) * "0" + num
+from numberAdjuster import numberAdjuster
 
 
 class NavbarConstructor:
@@ -75,6 +71,7 @@ class NavbarConstructor:
             item.draw()
 
     def update(self, x, y, data: dataHandler.Datahandler):
+        
         self.health = data.getHealth()
         self.gotchiPoint = data.getGotchiPoint()
         self.level = data.getLevel()
@@ -97,15 +94,6 @@ class NavbarConstructor:
         self.cashImage = Image.Image(self.screen, 0, 0, self.cashImageScaled)
         self.cashText = Text.Text(
             self.screen, ": {}".format(self.gotchiPoint), 0, 0, fontSize=26
-        )
-        self.leveldisplay = LevelDisplay.LevelDisplay(
-            self.screen,
-            10,
-            10,
-            self.level.getLevel(),
-            self.level.getProgression(),
-            150,
-            self.healthtextHeight,
         )
 
         self.navbarItem = [

@@ -29,3 +29,5 @@ class Gap:
             self.visible = True
         else:
             self.visible = False
+    def update(self, x,y, data):
+        pass

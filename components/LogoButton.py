@@ -25,21 +25,21 @@ class LogoButton(Button.Button):
                 self.screen,
                 (0,0,0),
                 (self.x1 - 2, self.y1 - 2, self.width + 4, self.height + 4),
-                border_radius=10,
+                border_radius=20,
             )
         if self.disabled:
             pygame.draw.rect(
                 self.screen,
                 (150, 150, 150),
                 (self.x1, self.y1, self.width, self.height),
-                border_radius=10,
+                border_radius=20,
             )
         else:
             pygame.draw.rect(
                 self.screen,
                 (217, 217, 217),
                 (self.x1, self.y1, self.width, self.height),
-                border_radius=10,
+                border_radius=20,
             )
         self.screen.blit(
             self.image, (self.x1 + self.width / 2 - self.imagerect.width / 2, self.y1)
@@ -53,5 +53,5 @@ class LogoButton(Button.Button):
         )
 
         if self.disabled:
-            for i in range(0, math.floor(self.width), 8):
+            for i in range(20, math.floor(self.width - 10) , 8):
                 pygame.draw.line(self.screen, (0,0,0), (self.x1 + i, self.y1), (self.x1, self.y1 + i))

@@ -11,8 +11,8 @@ DATA_TEMPLATE = {
     "progression": 0,
     "gotchiPoint": 0,
     "emotion": "happy",
-    "fuel_filter_functional": False,
-    "spark_plug_functional": False,
+    "fuel_filter_functional": True,
+    "spark_plug_functional": True,
     "battery_level": 1,
     "gears_missing": 0,
 }

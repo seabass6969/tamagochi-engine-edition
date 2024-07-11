@@ -11,8 +11,9 @@ def Grid_adjuster(
 ):
     item_on_row = 0
     x1_on = x1
-    highest_height = 0
     y1_on = y1
+
+    highest_height = 0
     for item in items:
         item.setXY(x1_on, y1_on)
         item_on_row += 1
@@ -23,6 +24,7 @@ def Grid_adjuster(
             y1_on += highest_height
             y1_on += gap
             item_on_row = 0
+            highest_height = 0
         else:
             x1_on += item.width
             x1_on += gap

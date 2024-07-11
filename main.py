@@ -1,4 +1,4 @@
-import pygame, sys, random
+import pygame, sys, random, math
 from components import (
     Button,
     StartButton,
@@ -12,7 +12,8 @@ from components import (
     Image,
     LevelDisplay,
     Gap,
-    InfoPageConstructor
+    InfoPageConstructor,
+    MemoryGameConstructor
 )
 
 # from dataHandler import dataHandler
@@ -138,11 +139,14 @@ if __name__ == "__main__":
     )
     # Info Page:
     infopageConstructor = InfoPageConstructor.InfoPageConstructor(screen, data)
+    # memory Page:
+    memoryGameConstructor = MemoryGameConstructor.MemoryGameConstructor(screen, data)
     # Bug page:
     hurtButton = Button.Button(screen, "hurt", 20, nav.height + 10, 100, 100)
     gotchiButton = Button.Button(screen, "gotchi", 20, nav.height + 20 + 100, 100, 100)
     emotionButton = Button.Button(screen, "emotion", 20, nav.height + 30 + 200, 100, 100)
-
+    batteryButton = Button.Button(screen, "battery", 20, nav.height + 40 + 300, 100, 100)
+    # batteryButton = Button.Button(screen, "battery", 20, nav.height + 40 + 300, 100, 100)
     # defining screen state drawing action
     startScreen = ScreenState.State(
         screen,
@@ -184,11 +188,21 @@ if __name__ == "__main__":
         optional_navbar_options=data,
         optional_back_button=True,
     )
+    memoryScreen = ScreenState.State(
+        screen,
+        "memory",
+        (115, 115, 115),
+        [memoryGameConstructor],
+        [],
+        optional_navbar=True,
+        optional_navbar_options=data,
+        optional_back_button=True,
+    )
     testScreen = ScreenState.State(
         screen,
         "test",
         (115, 115, 115),
-        [hurtButton, gotchiButton, emotionButton],
+        [hurtButton, gotchiButton, emotionButton, batteryButton],
         [],
         optional_navbar=True,
         optional_navbar_options=data,
@@ -201,6 +215,7 @@ if __name__ == "__main__":
         "main": mainScreen,
         "info": infoScreen,
         "market": marketScreen,
+        "memory": memoryScreen,
         "test": testScreen,
     }
     for component in screenStateTable.get(screenState).components:
@@ -225,7 +240,7 @@ if __name__ == "__main__":
             elif event.type == MOUSEBUTTONDOWN:
                 # mouse down event with button event
                 if startButton.getHovered():
-                    if data.getDoneTutorial() == False:
+                    if data.getDoneTutorial():
                         screenState = ScreenState.changeState(
                             True,
                             screenStateTable.get("main"),
@@ -271,6 +286,8 @@ if __name__ == "__main__":
                         listEmotion = ["happy", "sad", "ill", "mid", "angry"]
                         data.setEmotion(random.choice(listEmotion))
                         print(data.getEmotion())
+                    if batteryButton.getHovered():
+                        data.setBatteryLevel(0.5)
                 # backButton listener
                 if screenStateTable.get(screenState).getBackButtonHover():
                     screenState = ScreenState.changeState(
@@ -296,6 +313,12 @@ if __name__ == "__main__":
                         )
                         data.setDoneTutorial(True)
 
-        # update the display and the target FPS is 30
+        # update the display and the target FPS is infinity
+        FPS_DISPLAY = True
+        if FPS_DISPLAY:
+            FONT = pygame.font.SysFont("Comic Sans MS", 20)
+            TEXT = FONT.render(str(math.floor(fpsClock.get_fps())), False, (0,0,0))
+            screen.blit(TEXT, (10,10))
         pygame.display.update()
-        fpsClock.tick(120)
+        fpsClock.tick(0)
+

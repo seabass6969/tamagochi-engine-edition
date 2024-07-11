@@ -1,3 +1,4 @@
+from multiprocessing.pool import ThreadPool as Pool
 import traceback
 import pygame
 import Alert
@@ -39,7 +40,7 @@ class State:
         
         if self.optional_navbar:
             self.navbarConstructor = NavbarConstructor.NavbarConstructor(self.screen, optional_navbar_options.getHealth(), optional_navbar_options.getGotchiPoint(), optional_navbar_options.getLevel())
-            # self.optional_update_component.extend(self.navbarConstructor.components)
+            self.optional_update_component.extend(self.navbarConstructor.components)
         
         self.optional_back_button = optional_back_button
         
@@ -99,6 +100,11 @@ def changeState(
         componentEnable.extend(nextState.components_button)
         componentEnable.extend(nextState.components_text)
         componentEnable.extend(nextState.optional_update_component)
+        if previousState.optional_navbar:
+            previousState.navbarConstructor.leveldisplay.setVisibility(False)
+        if nextState.optional_navbar:
+            nextState.navbarConstructor.leveldisplay.setVisibility(True)
+        
         for component in componentDisable:
             component.setVisibility(False)
             component.hovered = False
@@ -107,7 +113,6 @@ def changeState(
             component.hovered = False
         if withAnimation:
             slideLeftToRight(screen, fpsClock, nextState.draw)
-
         return name
     except AttributeError:
         Alert.Alert(screen, previousState, IMAGE.get("ERROR"), "In Construction", "The Page is in construction!")

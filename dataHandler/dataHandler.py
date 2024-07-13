@@ -1,6 +1,5 @@
 import jsonschema
-import json
-import os
+import json, os, math
 import Level
 
 DATA_TEMPLATE = {
@@ -163,7 +162,16 @@ class Datahandler:
         return self.level
 
     def setLevel(self, level, progression):
-        self.level = Level(level, progression)
+        self.level = Level.Level(level, progression)
+        self.save()
+
+    def increaseLevel(self, progression):
+        left = progression 
+        while (self.getLevel().getLevelProgressionMax() - (self.getLevel().getProgression() + left)) <= 0:
+            left -= self.getLevel().getLevelProgressionMax() - self.getLevel().getProgression()
+            self.setLevel(self.getLevel().getLevel() + 1, 0)
+        self.setLevel(self.getLevel().getLevel(), self.getLevel().getProgression() + left)
+        print("level: {} and {} and {} away from next level".format(self.getLevel().getLevel(), self.getLevel().getProgression(), self.getLevel().getLevelProgressionMax() - self.getLevel().getProgression()))
         self.save()
 
     def getGotchiPoint(self):

@@ -1,4 +1,4 @@
-import pygame, os
+import pygame, os, random
 IMAGE = {
     "ENGINE": pygame.image.load(os.path.join("assets", "engine.png")),
     "INFO": pygame.image.load(os.path.join("assets/icon_button", "info.png")),
@@ -23,4 +23,23 @@ IMAGE = {
     "ANGRY": pygame.image.load(os.path.join("assets/icon_button", "angry.png")),
     "YES": pygame.image.load(os.path.join("assets/icon_button", "check.png")),
     "NO": pygame.image.load(os.path.join("assets/icon_button", "cross.png")),
+    "GEAR": pygame.image.load(os.path.join("assets/icon_button", "cog.png")),
+    "DRAWING": pygame.image.load(os.path.join("assets/icon_button", "drawing.png")),
 }
+
+IMAGE_MEMORY = [
+    pygame.image.load(os.path.join("assets/memory_game", "front_page.png")),
+    pygame.image.load(os.path.join("assets/memory_game", "cake.png")),
+    pygame.image.load(os.path.join("assets/memory_game", "can.png")),
+    pygame.image.load(os.path.join("assets/memory_game", "car.png")),
+    pygame.image.load(os.path.join("assets/memory_game", "earth.png")),
+    pygame.image.load(os.path.join("assets/memory_game", "gear.png")),
+    pygame.image.load(os.path.join("assets/memory_game", "lemon.png")),
+]
+
+IMAGE_CELEBRATION = [
+    pygame.image.load(os.path.join("assets/celebration", "well_done.png")),
+    pygame.image.load(os.path.join("assets/celebration", "excellent.png")),
+]
+def get_image_celebration():
+    return random.choice(IMAGE_CELEBRATION)

@@ -1,6 +1,6 @@
 import math
 
-REQUIREMENT = {"JUMPING_ROPE_GAME": 2, "CATCH_GAME": 5, "RACING_GAME": 10}
+REQUIREMENT = {"JUMPING_ROPE_GAME": 2, "CATCH_GAME": 5, "RACING_GAME": 10, "CIRCLE_GAME": 7}
 
 
 def levelUnlockCheck(level: int, requirement: int) -> bool:
@@ -52,13 +52,15 @@ XP_PROGRESSION = [
 
 
 class Level:
-    def __init__(self, level: int, progression: float):
+    def __init__(self, level: int, progression: int):
         self.level = level
         self.progression = progression
 
     def getLevel(self) -> int:
         return self.level
 
-    def getProgression(self) -> float:
+    def getProgression(self) -> int:
         return self.progression
+    def getLevelProgressionMax(self) -> int:
+        return XP_PROGRESSION[self.getLevel()]
 

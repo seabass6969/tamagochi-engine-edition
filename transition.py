@@ -7,5 +7,5 @@ def slideLeftToRight(screen: pygame.Surface, clock: pygame.time.Clock, nextDispl
         # x y width height
         pygame.draw.rect(screen, (125, 125, 0), (0, 0, i * 6, screen.get_height()))
         pygame.display.flip()
-
+        clock.tick(120)
     nextDisplay()

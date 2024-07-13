@@ -115,11 +115,11 @@ def changeState(
             slideLeftToRight(screen, fpsClock, nextState.draw)
         return name
     except AttributeError:
-        Alert.Alert(screen, previousState, IMAGE.get("ERROR"), "In Construction", "The Page is in construction!")
+        Alert.Alert(screen, previousState, "ERROR", "In Construction", "The Page is in construction!")
         print(traceback.format_exc())
         return previousState.name
     except Exception as e:
-        Alert.Alert(screen, previousState, IMAGE.get("ERROR"), "Danger Zone", "The Page is broken!")
+        Alert.Alert(screen, previousState, "ERROR", "Danger Zone", "The Page is broken!")
         print(traceback.format_exc())
         return previousState.name
         

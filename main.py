@@ -100,6 +100,16 @@ if __name__ == "__main__":
         levelUnlockCheck(data.getLevel().getLevel(), REQUIREMENT.get("CATCH_GAME")),
         REQUIREMENT.get("CATCH_GAME"),
     )
+    perfectcircleGameButton = LogoButton.LogoButton(
+        screen,
+        "circle",
+        IMAGE.get("DRAWING"),
+        "Perfect Circle",
+        50,
+        50,
+        levelUnlockCheck(data.getLevel().getLevel(), REQUIREMENT.get("CIRCLE_GAME")),
+        REQUIREMENT.get("CIRCLE_GAME"),
+    )
     racinggameButton = LogoButton.LogoButton(
         screen,
         "racing",
@@ -127,6 +137,7 @@ if __name__ == "__main__":
         memorygameButton,
         jumpinggameButton,
         catchinggameButton,
+        perfectcircleGameButton,
         racinggameButton,
         testButton,
     ]
@@ -140,12 +151,13 @@ if __name__ == "__main__":
     # Info Page:
     infopageConstructor = InfoPageConstructor.InfoPageConstructor(screen, data)
     # memory Page:
-    memoryGameConstructor = MemoryGameConstructor.MemoryGameConstructor(screen, data)
+    memoryGameConstructor = MemoryGameConstructor.MemoryGameConstructor(screen,nav.height + 10)
     # Bug page:
     hurtButton = Button.Button(screen, "hurt", 20, nav.height + 10, 100, 100)
     gotchiButton = Button.Button(screen, "gotchi", 20, nav.height + 20 + 100, 100, 100)
     emotionButton = Button.Button(screen, "emotion", 20, nav.height + 30 + 200, 100, 100)
     batteryButton = Button.Button(screen, "battery", 20, nav.height + 40 + 300, 100, 100)
+    increaserButton = Button.Button(screen, "level increase", 20, nav.height + 50 + 400, 300, 100)
     # batteryButton = Button.Button(screen, "battery", 20, nav.height + 40 + 300, 100, 100)
     # defining screen state drawing action
     startScreen = ScreenState.State(
@@ -202,7 +214,7 @@ if __name__ == "__main__":
         screen,
         "test",
         (115, 115, 115),
-        [hurtButton, gotchiButton, emotionButton, batteryButton],
+        [hurtButton, gotchiButton, emotionButton, batteryButton, increaserButton],
         [],
         optional_navbar=True,
         optional_navbar_options=data,
@@ -263,7 +275,7 @@ if __name__ == "__main__":
                                 Alert.Alert(
                                     screen,
                                     screenStateTable.get(screenState),
-                                    IMAGE.get("ERROR"),
+                                    "ERROR",
                                     "Low level",
                                     "Come back when you are level {}!".format(
                                         button.level_requirement
@@ -288,6 +300,10 @@ if __name__ == "__main__":
                         print(data.getEmotion())
                     if batteryButton.getHovered():
                         data.setBatteryLevel(0.5)
+                    if increaserButton.getHovered():
+                        data.increaseLevel(10)
+                elif screenState == "memory":
+                    memoryGameConstructor.clickRegister()
                 # backButton listener
                 if screenStateTable.get(screenState).getBackButtonHover():
                     screenState = ScreenState.changeState(
@@ -320,5 +336,5 @@ if __name__ == "__main__":
             TEXT = FONT.render(str(math.floor(fpsClock.get_fps())), False, (0,0,0))
             screen.blit(TEXT, (10,10))
         pygame.display.update()
-        fpsClock.tick(0)
+        fpsClock.tick(120)
 

@@ -40,7 +40,7 @@ class NavbarConstructor:
             10,
             10,
             self.level.getLevel(),
-            self.level.getProgression(),
+            self.level.getProgression() / self.level.getLevelProgressionMax(),
             150,
             self.healthtextHeight,
         )

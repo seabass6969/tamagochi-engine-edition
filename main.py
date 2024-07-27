@@ -34,6 +34,7 @@ if __name__ == "__main__":
     transition = False
     pygame.init()
     data = dataHandler.Datahandler()
+    data.setLastLogin()
 
     # gotchiPoint = data.getGotchiPoint()
 
@@ -328,7 +329,19 @@ if __name__ == "__main__":
                             fpsClock,
                         )
                         data.setDoneTutorial(True)
+            
+            if screenState == "memory" and memoryGameConstructor.switchAfterWon:
+                screenState = ScreenState.changeState(
+                    True,
+                    screenStateTable.get("main"),
+                    screenStateTable.get(screenState),
+                    screen,
+                    fpsClock,
+                )
+                memoryGameConstructor.switchAfterWon = False
 
+        if data.isDead():
+            Alert.Alert(screen, screenStateTable.get(screenState), "skull", "RIP", "Your pet is dead and the age of death is".format(12))
         # update the display and the target FPS is infinity
         FPS_DISPLAY = True
         if FPS_DISPLAY:
@@ -336,5 +349,7 @@ if __name__ == "__main__":
             TEXT = FONT.render(str(math.floor(fpsClock.get_fps())), False, (0,0,0))
             screen.blit(TEXT, (10,10))
         pygame.display.update()
+        # print(data.getTimeTillLastLogin("s"))
+        data.randomDeduction()
         fpsClock.tick(120)
 

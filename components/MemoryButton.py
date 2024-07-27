@@ -56,28 +56,33 @@ class MemoryButton:
                 (self.x1 - 3, self.y1 - 3, self.width + 6, self.height + 6),
                 border_radius=20,
             )
-        if self.switching_motion == False:
-            if self.flipSide == "front":
-                self.screen.blit(
-                    self.changing_image,
-                    (self.x1 + self.flip_limiter / 2 - self.flip_limiter / 5, self.y1),
-                )
-            elif self.flipSide == "back":
-                self.screen.blit(
-                    self.changing_image_back,
-                    (self.x1 + self.flip_limiter / 2 - self.flip_limiter / 5, self.y1),
-                )
+            self.screen.blit(
+                self.changing_image,
+                (self.x1 , self.y1),
+            )
         else:
-            if self.flipSide == "front":
-                self.screen.blit(
-                    self.changing_image,
-                    (self.x1 + (self.width - self.true_flip_limiter) / 2 + 1, self.y1),
-                )
-            elif self.flipSide == "back":
-                self.screen.blit(
-                    self.changing_image_back,
-                    (self.x1 + (self.width - self.true_flip_limiter) / 2 + 1, self.y1),
-                )
+            if self.switching_motion == False:
+                if self.flipSide == "front":
+                    self.screen.blit(
+                        self.changing_image,
+                        (self.x1 + self.flip_limiter / 2 - self.flip_limiter / 5, self.y1),
+                    )
+                elif self.flipSide == "back":
+                    self.screen.blit(
+                        self.changing_image_back,
+                        (self.x1 + self.flip_limiter / 2 - self.flip_limiter / 5, self.y1),
+                    )
+            else:
+                if self.flipSide == "front":
+                    self.screen.blit(
+                        self.changing_image,
+                        (self.x1 + (self.width - self.true_flip_limiter) / 2 + 1, self.y1),
+                    )
+                elif self.flipSide == "back":
+                    self.screen.blit(
+                        self.changing_image_back,
+                        (self.x1 + (self.width - self.true_flip_limiter) / 2 + 1, self.y1),
+                    )
 
     def update(self, x, y, data, peakCount: int, peaking: []):
         self.peakCount = peakCount

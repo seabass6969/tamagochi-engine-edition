@@ -3,27 +3,8 @@ import pygame
 from asset import IMAGE
 from components import Gap, Grid, Image, Text, Tickorcross, ProgressBar
 from dataHandler import dataHandler
+from emotionConstant import EMOTIONAL_IMAGE
 
-
-EMOTIONAL_IMAGE = {
-    "happy": [
-        IMAGE.get("HAPPY1"),
-        IMAGE.get("HAPPY2"),
-        IMAGE.get("HAPPY3"),
-    ],
-    "ill": [
-        IMAGE.get("ILL"),
-    ],
-    "mid": [
-        IMAGE.get("MID"),
-    ],
-    "sad": [
-        IMAGE.get("SAD"),
-    ],
-    "angry": [
-        IMAGE.get("ANGRY"),
-    ],
-}
 
 
 class InfoPageConstructor:
@@ -130,12 +111,19 @@ class InfoPageConstructor:
             )
 
             self.GearMissingStatus = Text.Text(
-                self.screen, "Gear Missing: {}".format(self.gearMissing), 0, 0, fontSize=29
+                self.screen,
+                "Gear Missing: {}".format(self.gearMissing),
+                0,
+                0,
+                fontSize=29,
             )
             self.sparkPlugStatusImage.YesOrNo = self.sparkPlug
             self.FilterStatusImage.YesOrNo = self.fuelFilter
             self.BatteryLevelProgressbar.progression = self.batteryLevel
             self.OilLevelStatusProgressbar.progression = self.OilLevel
+
+            self.BatteryLevelProgressbar.optional_update()
+            self.OilLevelStatusProgressbar.optional_update()
 
             self.infoPageItems = [
                 self.EngineImage,

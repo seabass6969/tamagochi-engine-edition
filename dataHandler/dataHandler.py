@@ -1,34 +1,37 @@
 import jsonschema
-import json, os, math
+import json, os, math, random, time 
 import Level
+from emotionConstant import EMOTIONAL_PROGRESSION_NEGATIVELY, EMOTIONAL_PROGRESSION_POSITIVELY
 
 DATA_TEMPLATE = {
     "done_tutorial": False,
     "health": 10,
-    "oilLevel": 1,
+    "oilLevel": 100,
     "level": 0,
     "progression": 0,
     "gotchiPoint": 0,
     "emotion": "happy",
     "fuel_filter_functional": True,
     "spark_plug_functional": True,
-    "battery_level": 1,
+    "battery_level": 100,
     "gears_missing": 0,
+    "last_login": 1722081124,  # using the python time.time()
 }
 SCHEMA = {
     "type": "object",
     "properties": {
         "done_tutorial": {"type": "boolean"},
         "health": {"type": "number", "minimum": 0, "maximum": 10},
-        "oilLevel": {"type": "number", "minimum": 0, "maximum": 1},
+        "oilLevel": {"type": "number", "minimum": 0, "maximum": 100},
         "level": {"type": "number", "minimum": 0},
         "progression": {"type": "number", "minimum": 0, "maximum": 1},
         "gotchiPoint": {"type": "number", "minimum": 0},
         "emotion": {"type": "string", "enum": ["happy", "sad", "ill", "mid", "angry"]},
         "fuel_filter_functional": {"type": "boolean"},
         "spark_plug_functional": {"type": "boolean"},
-        "battery_level": {"type": "number", "minimum": 0, "maximum": 1},
+        "battery_level": {"type": "number", "minimum": 0, "maximum": 100},
         "gears_missing": {"type": "number", "minimum": 0},
+        "last_login": {"type": "number"},
     },
     "required": [
         "done_tutorial",
@@ -42,6 +45,7 @@ SCHEMA = {
         "spark_plug_functional",
         "battery_level",
         "gears_missing",
+        "last_login",
     ],
     "additionalProperties": False,
 }
@@ -65,6 +69,7 @@ def fill_missing_properties(original: dict, missing: [str], default: dict) -> di
 
 class Datahandler:
     def __init__(self):
+        self.last_deduction_period = 0
         self.done_tutorial = DATA_TEMPLATE.get("done_tutorial")
         self.health = DATA_TEMPLATE.get("health")
         self.oilLevel = DATA_TEMPLATE.get("oilLevel")
@@ -78,6 +83,7 @@ class Datahandler:
         self.spark_plug_functional = DATA_TEMPLATE.get("spark_plug_functional")
         self.battery_level = DATA_TEMPLATE.get("battery_level")
         self.gears_missing = DATA_TEMPLATE.get("gears_missing")
+        self.last_login = DATA_TEMPLATE.get("last_login")
 
         self.STOREPATH = os.path.join("../", "store.json")
         if os.path.exists(self.STOREPATH) == False:
@@ -97,6 +103,7 @@ class Datahandler:
         self.save()
 
     def end(self):
+        self.setLastLogin()
         self.FILEOPEN.close()
 
     def save(self):
@@ -112,6 +119,7 @@ class Datahandler:
             "spark_plug_functional": self.getSparkPlug(),
             "battery_level": self.getBatteryLevel(),
             "gears_missing": self.getGearMissing(),
+            "last_login": self.getLastLogin(),
         }
         self.FILEOPEN = open(self.STOREPATH, "w")
         self.FILEOPEN.write(json.dumps(self.data))
@@ -128,7 +136,10 @@ class Datahandler:
         self.spark_plug_functional = self.data.get("spark_plug_functional")
         self.battery_level = self.data.get("battery_level")
         self.gears_missing = self.data.get("gears_missing")
+        self.last_login = self.data.get("last_login")
 
+    def getDataByID(self, ID):
+        self.data.get(ID)
     def getDoneTutorial(self):
         return self.done_tutorial
 
@@ -144,12 +155,14 @@ class Datahandler:
         self.save()
 
     def increaseHealth(self, by):
-        self.health += by
-        self.save()
+        if (self.health + by) <= 10:
+            self.health += by
+            self.save()
 
     def decreaseHealth(self, by):
-        self.health -= by
-        self.save()
+        if (self.health - by) >= 0:
+            self.health -= by
+            self.save()
 
     def getOilLevel(self):
         return self.oilLevel
@@ -166,12 +179,27 @@ class Datahandler:
         self.save()
 
     def increaseLevel(self, progression):
-        left = progression 
-        while (self.getLevel().getLevelProgressionMax() - (self.getLevel().getProgression() + left)) <= 0:
-            left -= self.getLevel().getLevelProgressionMax() - self.getLevel().getProgression()
+        left = progression
+        while (
+            self.getLevel().getLevelProgressionMax()
+            - (self.getLevel().getProgression() + left)
+        ) <= 0:
+            left -= (
+                self.getLevel().getLevelProgressionMax()
+                - self.getLevel().getProgression()
+            )
             self.setLevel(self.getLevel().getLevel() + 1, 0)
-        self.setLevel(self.getLevel().getLevel(), self.getLevel().getProgression() + left)
-        print("level: {} and {} and {} away from next level".format(self.getLevel().getLevel(), self.getLevel().getProgression(), self.getLevel().getLevelProgressionMax() - self.getLevel().getProgression()))
+        self.setLevel(
+            self.getLevel().getLevel(), self.getLevel().getProgression() + left
+        )
+        print(
+            "level: {} and {} and {} away from next level".format(
+                self.getLevel().getLevel(),
+                self.getLevel().getProgression(),
+                self.getLevel().getLevelProgressionMax()
+                - self.getLevel().getProgression(),
+            )
+        )
         self.save()
 
     def getGotchiPoint(self):
@@ -224,7 +252,73 @@ class Datahandler:
         self.gears_missing = gear
         self.save()
 
+    def getLastLogin(self):
+        return self.last_login
 
+    def setLastLogin(self):
+        self.last_login = math.floor(time.time())
+        self.save()
+
+    def isDead(self):
+        if self.health == 0:
+            return True
+        else:
+            return False
+    def getTimeTillLastLogin(self, unit):
+        """
+        get the time till last login in any unit
+        - seconds (s)
+        - minutes (m)
+        - hours (h)
+        failback will be second
+        """
+        period =math.floor(time.time()) - self.last_login   # this is in second
+        match unit:
+            case "s":
+                return period
+            case "m":
+                return math.floor(period / 60)
+            case "h":
+                return math.floor(period / 60 / 60)
+            case _:
+                return period
+    
+    def randomDeduction(self):
+        last_login_time = self.getTimeTillLastLogin("s")
+        if last_login_time % 1 == 0 and last_login_time != 0 and last_login_time != self.last_deduction_period:
+            if random.randint(1,20) == 1 and self.getGearMissing() <= 10: # 1 in 20 chance - the gear will miss
+                self.gears_missing += 1
+            if random.randint(1,2) == 1 and self.getBatteryLevel() > 0: # 1 in 2 chance - battery level decrease by 1%
+                self.setBatteryLevel(self.getBatteryLevel() - 1)
+            if self.getOilLevel() > 0: # oil level decrease by 1%
+                self.setOilLevel(self.getOilLevel() - 1)
+            if random.randint(1,100) == 1: # 1 in 100 chance spark plug go malfunction
+                self.setSparkPlug(False)
+            if random.randint(1,100) == 1: # 1 in 100 chance filter go malfunction
+                self.setFilter(False)
+
+            print("random Dedcution happened every 5 minutes", last_login_time)
+            self.healthAndEmotionHandler()
+            self.last_deduction_period = last_login_time # this is used to prevent double deduction 
+        
+    def healthAndEmotionHandler(self):
+        if self.petHealth():
+            print("health oh no")
+        if self.petHealth() and random.randint(1,5):
+            self.EmotionTriggerer("-")
+            self.decreaseHealth(1)
+                
+    def EmotionTriggerer(self, poles):
+        """
+        poles - parameter for + or - emotion
+        """
+        if poles == "-":
+            self.setEmotion(random.choice(EMOTIONAL_PROGRESSION_NEGATIVELY))
+        if poles == "+":
+            self.setEmotion(random.choice(EMOTIONAL_PROGRESSION_POSITIVELY))
+
+    def petHealth(self) -> bool:
+        return (self.getBatteryLevel() < 5 or self.getGearMissing() == 10 or self.getOilLevel() < 5) and (not self.getSparkPlug() or not self.getFilter())
 # data = Datahandler()
 
 

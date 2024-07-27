@@ -11,13 +11,13 @@
     - [ ] wretch
 - [ ] shop using gotchi points
 - [ ] earning gotchi points via
-    - [ ] memory games
+    - [x] memory games
     - [ ] Jumping Rope* level 2
     - [ ] catch* level 5
     - [ ] drag race betting* at level 10
+    - [ ] perfect circle game
 
-- [ ] OBD 
-- [ ] health (hearts) / level /  
+- [x] health (hearts) / level /  
 ## assets
 - [craiyon](https://www.craiyon.com/)
 - [google fonts icon](https://fonts.google.com/icons)

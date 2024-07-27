@@ -16,7 +16,9 @@ class TickCross(Image.Image):
         self.height = height 
     def update(self,x,y, data):
         super().update(x,y, data)
-        if YesOrNo == True:
-            self.image = self.SCALED_CHECKMARK
+
+    def draw(self):
+        if self.YesOrNo == True:
+            self.screen.blit(self.SCALED_CHECKMARK, (self.x1, self.y1))
         else:
-            self.image = self.SCALED_CROSS
+            self.screen.blit(self.SCALED_CROSS, (self.x1, self.y1))

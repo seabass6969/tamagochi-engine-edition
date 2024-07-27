@@ -2,6 +2,7 @@ import pygame, math, random
 import Alert
 from dataHandler import dataHandler
 from components import MemoryButton, Grid
+import ScreenState
 from asset import IMAGE, IMAGE_MEMORY, get_image_celebration
 
 
@@ -34,6 +35,7 @@ class MemoryGameConstructor:
             10,
             4,
         )
+        self.switchAfterWon = False
 
     def update(self, x, y, data: dataHandler.Datahandler):
         self.total_peaks = 0
@@ -51,7 +53,7 @@ class MemoryGameConstructor:
         if self.won == False:
             total = 0
             for component in self.memoryGameItems:
-                if component.flipSide == "front":
+                if component.user_linked:
                     total += 1
             if total == len(self.memoryGameItems):
                 self.won = True
@@ -100,4 +102,7 @@ class MemoryGameConstructor:
             component.click()
 
     def reset(self):
+        # A bug is currently causing all the card to be disabled after reset so this will teleport the user back to the main screen 
         self.__init__(self.screen, self.y)
+        self.switchAfterWon = True
+        self.won = False

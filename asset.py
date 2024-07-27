@@ -25,6 +25,7 @@ IMAGE = {
     "NO": pygame.image.load(os.path.join("assets/icon_button", "cross.png")),
     "GEAR": pygame.image.load(os.path.join("assets/icon_button", "cog.png")),
     "DRAWING": pygame.image.load(os.path.join("assets/icon_button", "drawing.png")),
+    "SKULL": pygame.image.load(os.path.join("assets/icon_button", "skull.png")),
 }
 
 IMAGE_MEMORY = [

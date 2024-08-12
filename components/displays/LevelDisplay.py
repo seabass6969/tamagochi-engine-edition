@@ -1,5 +1,5 @@
 import pygame, math
-from components.Text import Text
+from components.displays.text.Text import Text
 from dataHandler import dataHandler
 
 

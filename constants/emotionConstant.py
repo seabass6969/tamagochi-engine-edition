@@ -1,4 +1,5 @@
-from asset import IMAGE
+from constants.asset import IMAGE
+
 EMOTIONAL_IMAGE = {
     "happy": [
         IMAGE.get("HAPPY1"),

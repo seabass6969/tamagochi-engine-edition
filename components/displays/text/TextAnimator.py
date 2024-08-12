@@ -1,7 +1,7 @@
 import random
 import pygame
 import math
-from components import Text
+from components.displays.text import Text
 JOKE = [
     "lightning mcqueen",
     "engine drinks oil",

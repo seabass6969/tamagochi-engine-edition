@@ -1,6 +1,6 @@
 import random
 import pygame
-from asset import IMAGE, IMAGE_MEMORY
+from constants.asset import IMAGE, IMAGE_MEMORY
 
 
 class MemoryButton:

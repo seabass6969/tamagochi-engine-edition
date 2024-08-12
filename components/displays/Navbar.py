@@ -1,5 +1,4 @@
 import pygame
-from components import Text
 
 
 class Navbar:

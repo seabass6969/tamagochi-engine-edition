@@ -1,6 +1,6 @@
 import pygame
-from components.Button import Button
-from asset import IMAGE
+from components.interactables.button.Button import Button
+from constants.asset import IMAGE
 
 
 class BackButton(Button):

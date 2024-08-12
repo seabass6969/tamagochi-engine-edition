@@ -1,5 +1,6 @@
 import pygame
-from components import Button, Text
+from components.displays.text import Text
+from components.interactables.button import Button
 
 
 def Grid_adjuster(

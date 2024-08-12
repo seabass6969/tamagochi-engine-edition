@@ -1,6 +1,6 @@
 import pygame
-from asset import IMAGE
-from components import Image
+from constants.asset import IMAGE
+from components.displays import Image
 class TickCross(Image.Image):
     def __init__(self, screen, YesOrNo, x, y, width, height):
         self.YesOrNo = YesOrNo

@@ -1,27 +1,36 @@
 import pygame, sys, random, math
+from components.displays.text import (
+    Text,
+    TutorialText,
+    TextAnimator,
+)
+from components.displays import (
+    Navbar,
+    Image,
+    LevelDisplay,
+)
 from components import (
+    Grid,
+    Gap,
+)
+from components.interactables.button import (
     Button,
     StartButton,
     BackButton,
-    Text,
-    TutorialText,
     LogoButton,
-    Grid,
-    Navbar,
-    TextAnimator,
-    Image,
-    LevelDisplay,
-    Gap,
+)
+from components.constructors import (
     InfoPageConstructor,
     MemoryGameConstructor,
+    MarketplaceConstructor
 )
 
 # from dataHandler import dataHandler
 from pygame.locals import *
 import ScreenState
 import Alert
-from Level import Level, levelUnlockCheck, REQUIREMENT
-from asset import IMAGE
+from constants.Level import Level, levelUnlockCheck, REQUIREMENT
+from constants.asset import IMAGE
 from dataHandler import dataHandler
 
 
@@ -155,6 +164,8 @@ if __name__ == "__main__":
     memoryGameConstructor = MemoryGameConstructor.MemoryGameConstructor(
         screen, nav.height + 10
     )
+    # Marketplace Page
+    marketplaceConstructor = MarketplaceConstructor.MarketplaceConstructor(screen, nav.height + 10)
     # Bug page:
     hurtButton = Button.Button(screen, "hurt", 20, nav.height + 10, 100, 100)
     gotchiButton = Button.Button(screen, "gotchi", 20, nav.height + 20 + 100, 100, 100)
@@ -204,7 +215,8 @@ if __name__ == "__main__":
         "market",
         (115, 115, 115),
         [],
-        [],
+        [marketplaceConstructor],
+        optional_update_component=[marketplaceConstructor],
         optional_navbar=True,
         optional_navbar_options=data,
         optional_back_button=True,

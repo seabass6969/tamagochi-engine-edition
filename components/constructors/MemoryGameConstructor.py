@@ -1,9 +1,10 @@
 import pygame, math, random
 import Alert
 from dataHandler import dataHandler
-from components import MemoryButton, Grid
+from components import Grid
+from components.interactables.button import MemoryButton
 import ScreenState
-from asset import IMAGE, IMAGE_MEMORY, get_image_celebration
+from constants.asset import IMAGE, IMAGE_MEMORY, get_image_celebration
 
 
 class MemoryGameConstructor:
@@ -90,9 +91,6 @@ class MemoryGameConstructor:
                     self.screen.get_height() / 2 - self.won_image.get_height() / 2,
                 ),
             )
-
-    def getHovered(self) -> bool:
-        return self.hovered and self.visible
 
     def setVisibility(self, vis: bool):
         for component in self.memoryGameItems:

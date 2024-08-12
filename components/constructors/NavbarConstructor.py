@@ -1,7 +1,9 @@
 import pygame
-from asset import IMAGE
-from components import Text, Image, Gap, LevelDisplay, Grid, Navbar
-import Level
+from constants.asset import IMAGE
+from components import (Gap, Grid)
+from components.displays import (Image, LevelDisplay, Navbar)
+from components.displays.text import Text
+from constants import Level
 from dataHandler import dataHandler
 from numberAdjuster import numberAdjuster
 

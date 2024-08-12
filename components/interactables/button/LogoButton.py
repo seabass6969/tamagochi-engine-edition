@@ -1,5 +1,5 @@
 import pygame
-from components import Button
+from components.interactables.button import Button
 import math
 
 

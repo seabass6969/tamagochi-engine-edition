@@ -1,10 +1,10 @@
 import pygame, math
-from components.Text import Text
+from components.displays.text import Text
 from dataHandler import dataHandler
 from numberAdjuster import numberAdjuster
 
 
-class ProgressBar(Text):
+class ProgressBar(Text.Text):
     def __init__(
         self,
         screen: pygame.Surface,

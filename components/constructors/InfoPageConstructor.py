@@ -1,10 +1,11 @@
 import random
 import pygame
-from asset import IMAGE
-from components import Gap, Grid, Image, Text, Tickorcross, ProgressBar
+from constants.asset import IMAGE
+from components import Gap, Grid
+from components.displays import Image, Tickorcross, ProgressBar
+from components.displays.text import Text
 from dataHandler import dataHandler
-from emotionConstant import EMOTIONAL_IMAGE
-
+from constants.emotionConstant import EMOTIONAL_IMAGE
 
 
 class InfoPageConstructor:

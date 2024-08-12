@@ -3,9 +3,10 @@ import traceback
 import pygame
 import Alert
 from transition import slideLeftToRight
-from asset import IMAGE
-from components import BackButton, NavbarConstructor
-import Level
+from constants.asset import IMAGE
+from components.interactables.button import BackButton 
+from components.constructors import NavbarConstructor
+from constants import Level
 from dataHandler import dataHandler
 
 

@@ -1,7 +1,7 @@
 import jsonschema
 import json, os, math, random, time
-import Level
-from emotionConstant import (
+from constants import Level
+from constants.emotionConstant import (
     EMOTIONAL_PROGRESSION_NEGATIVELY,
     EMOTIONAL_PROGRESSION_POSITIVELY,
 )

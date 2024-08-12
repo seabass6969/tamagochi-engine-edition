@@ -1,7 +1,8 @@
 import pygame
 from pygame.locals import *
-from components import Button, Text
-from asset import IMAGE
+from components.displays.text import Text
+from components.interactables.button import Button
+from constants.asset import IMAGE
 import math
 
 

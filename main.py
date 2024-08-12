@@ -13,7 +13,7 @@ from components import (
     LevelDisplay,
     Gap,
     InfoPageConstructor,
-    MemoryGameConstructor
+    MemoryGameConstructor,
 )
 
 # from dataHandler import dataHandler
@@ -152,13 +152,21 @@ if __name__ == "__main__":
     # Info Page:
     infopageConstructor = InfoPageConstructor.InfoPageConstructor(screen, data)
     # memory Page:
-    memoryGameConstructor = MemoryGameConstructor.MemoryGameConstructor(screen,nav.height + 10)
+    memoryGameConstructor = MemoryGameConstructor.MemoryGameConstructor(
+        screen, nav.height + 10
+    )
     # Bug page:
     hurtButton = Button.Button(screen, "hurt", 20, nav.height + 10, 100, 100)
     gotchiButton = Button.Button(screen, "gotchi", 20, nav.height + 20 + 100, 100, 100)
-    emotionButton = Button.Button(screen, "emotion", 20, nav.height + 30 + 200, 100, 100)
-    batteryButton = Button.Button(screen, "battery", 20, nav.height + 40 + 300, 100, 100)
-    increaserButton = Button.Button(screen, "level increase", 20, nav.height + 50 + 400, 300, 100)
+    emotionButton = Button.Button(
+        screen, "emotion", 20, nav.height + 30 + 200, 100, 100
+    )
+    batteryButton = Button.Button(
+        screen, "battery", 20, nav.height + 40 + 300, 100, 100
+    )
+    increaserButton = Button.Button(
+        screen, "level increase", 20, nav.height + 50 + 400, 300, 100
+    )
     # batteryButton = Button.Button(screen, "battery", 20, nav.height + 40 + 300, 100, 100)
     # defining screen state drawing action
     startScreen = ScreenState.State(
@@ -247,6 +255,11 @@ if __name__ == "__main__":
                 pygame.quit()
                 sys.exit()
                 data.end()
+
+                if data.isDead():
+                    data.wipeData()
+                    pygame.quit()
+                    sys.exit()
             # mouse event
             elif event.type == MOUSEMOTION:
                 pass
@@ -278,9 +291,15 @@ if __name__ == "__main__":
                                     screenStateTable.get(screenState),
                                     "ERROR",
                                     "Low level",
-                                    "Come back when you are level {}!".format(
-                                        button.level_requirement
-                                    ),
+                                    [
+                                        "Your level is {}.".format(
+                                            data.getLevel().getLevel()
+                                        ),
+                                        "You haven't met the level requirement",
+                                        "Come back when you are level {}!".format(
+                                            button.level_requirement
+                                        ),
+                                    ],
                                 )
                             else:
                                 screenState = ScreenState.changeState(
@@ -329,7 +348,7 @@ if __name__ == "__main__":
                             fpsClock,
                         )
                         data.setDoneTutorial(True)
-            
+
             if screenState == "memory" and memoryGameConstructor.switchAfterWon:
                 screenState = ScreenState.changeState(
                     True,
@@ -341,15 +360,30 @@ if __name__ == "__main__":
                 memoryGameConstructor.switchAfterWon = False
 
         if data.isDead():
-            Alert.Alert(screen, screenStateTable.get(screenState), "skull", "RIP", "Your pet is dead and the age of death is".format(12))
+
+            Alert.Alert(
+                screen,
+                screenStateTable.get(screenState),
+                "SKULL",
+                "RIP",
+                [
+                    "Your pet is dead and",
+                    "the age of death is: ",
+                    "{}".format(data.petAge()),
+                ],
+            )
+            data.wipeData()
+
+            pygame.quit()
+            sys.exit()
+
         # update the display and the target FPS is infinity
         FPS_DISPLAY = True
         if FPS_DISPLAY:
             FONT = pygame.font.SysFont("Comic Sans MS", 20)
-            TEXT = FONT.render(str(math.floor(fpsClock.get_fps())), False, (0,0,0))
-            screen.blit(TEXT, (10,10))
+            TEXT = FONT.render(str(math.floor(fpsClock.get_fps())), False, (0, 0, 0))
+            screen.blit(TEXT, (10, 10))
         pygame.display.update()
         # print(data.getTimeTillLastLogin("s"))
         data.randomDeduction()
         fpsClock.tick(120)
-

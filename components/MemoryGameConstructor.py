@@ -70,9 +70,10 @@ class MemoryGameConstructor:
                     self,
                     "HAPPY1",
                     "You Won",
-                    "It takes you {} peaks. earning {} points / {} xp".format(
+                    ["It takes you {} peaks. ",
+                    "Earning {} points / {} xp".format(
                         self.total_peaks, increasedBy, increasedByLvl
-                    ),
+                    )],
                 )
                 self.reset()
         # for component in self.memoryGameItems:

@@ -1,7 +1,10 @@
 import jsonschema
-import json, os, math, random, time 
+import json, os, math, random, time
 import Level
-from emotionConstant import EMOTIONAL_PROGRESSION_NEGATIVELY, EMOTIONAL_PROGRESSION_POSITIVELY
+from emotionConstant import (
+    EMOTIONAL_PROGRESSION_NEGATIVELY,
+    EMOTIONAL_PROGRESSION_POSITIVELY,
+)
 
 DATA_TEMPLATE = {
     "done_tutorial": False,
@@ -16,6 +19,7 @@ DATA_TEMPLATE = {
     "battery_level": 100,
     "gears_missing": 0,
     "last_login": 1722081124,  # using the python time.time()
+    "first_login": math.floor(time.time()),
 }
 SCHEMA = {
     "type": "object",
@@ -32,6 +36,7 @@ SCHEMA = {
         "battery_level": {"type": "number", "minimum": 0, "maximum": 100},
         "gears_missing": {"type": "number", "minimum": 0},
         "last_login": {"type": "number"},
+        "first_login": {"type": "number"},
     },
     "required": [
         "done_tutorial",
@@ -46,6 +51,7 @@ SCHEMA = {
         "battery_level",
         "gears_missing",
         "last_login",
+        "first_login",
     ],
     "additionalProperties": False,
 }
@@ -84,6 +90,7 @@ class Datahandler:
         self.battery_level = DATA_TEMPLATE.get("battery_level")
         self.gears_missing = DATA_TEMPLATE.get("gears_missing")
         self.last_login = DATA_TEMPLATE.get("last_login")
+        self.first_login = DATA_TEMPLATE.get("first_login")
 
         self.STOREPATH = os.path.join("../", "store.json")
         if os.path.exists(self.STOREPATH) == False:
@@ -120,6 +127,7 @@ class Datahandler:
             "battery_level": self.getBatteryLevel(),
             "gears_missing": self.getGearMissing(),
             "last_login": self.getLastLogin(),
+            "first_login": self.getFirstLogin(),
         }
         self.FILEOPEN = open(self.STOREPATH, "w")
         self.FILEOPEN.write(json.dumps(self.data))
@@ -137,9 +145,11 @@ class Datahandler:
         self.battery_level = self.data.get("battery_level")
         self.gears_missing = self.data.get("gears_missing")
         self.last_login = self.data.get("last_login")
+        self.first_login = self.data.get("first_login")
 
     def getDataByID(self, ID):
         self.data.get(ID)
+
     def getDoneTutorial(self):
         return self.done_tutorial
 
@@ -264,6 +274,7 @@ class Datahandler:
             return True
         else:
             return False
+
     def getTimeTillLastLogin(self, unit):
         """
         get the time till last login in any unit
@@ -272,7 +283,7 @@ class Datahandler:
         - hours (h)
         failback will be second
         """
-        period =math.floor(time.time()) - self.last_login   # this is in second
+        period = math.floor(time.time()) - self.last_login  # this is in second
         match unit:
             case "s":
                 return period
@@ -282,32 +293,45 @@ class Datahandler:
                 return math.floor(period / 60 / 60)
             case _:
                 return period
-    
+
+    def getFirstLogin(self):
+        return self.first_login
+
     def randomDeduction(self):
         last_login_time = self.getTimeTillLastLogin("s")
-        if last_login_time % 1 == 0 and last_login_time != 0 and last_login_time != self.last_deduction_period:
-            if random.randint(1,20) == 1 and self.getGearMissing() <= 10: # 1 in 20 chance - the gear will miss
+        if (
+            last_login_time % (30) == 0
+            and last_login_time != 0
+            and last_login_time != self.last_deduction_period
+        ):
+            if (
+                random.randint(1, 20) == 1 and self.getGearMissing() <= 10
+            ):  # 1 in 20 chance - the gear will miss
                 self.gears_missing += 1
-            if random.randint(1,2) == 1 and self.getBatteryLevel() > 0: # 1 in 2 chance - battery level decrease by 1%
+            if (
+                random.randint(1, 2) == 1 and self.getBatteryLevel() > 0
+            ):  # 1 in 2 chance - battery level decrease by 1%
                 self.setBatteryLevel(self.getBatteryLevel() - 1)
-            if self.getOilLevel() > 0: # oil level decrease by 1%
+            if self.getOilLevel() > 0:  # oil level decrease by 1%
                 self.setOilLevel(self.getOilLevel() - 1)
-            if random.randint(1,100) == 1: # 1 in 100 chance spark plug go malfunction
+            if random.randint(1, 100) == 1:  # 1 in 100 chance spark plug go malfunction
                 self.setSparkPlug(False)
-            if random.randint(1,100) == 1: # 1 in 100 chance filter go malfunction
+            if random.randint(1, 100) == 1:  # 1 in 100 chance filter go malfunction
                 self.setFilter(False)
 
-            print("random Dedcution happened every 5 minutes", last_login_time)
+            print("random Dedcution happened every 30 second", last_login_time)
             self.healthAndEmotionHandler()
-            self.last_deduction_period = last_login_time # this is used to prevent double deduction 
-        
+            self.last_deduction_period = (
+                last_login_time  # this is used to prevent double deduction
+            )
+
     def healthAndEmotionHandler(self):
         if self.petHealth():
             print("health oh no")
-        if self.petHealth() and random.randint(1,5):
+        if self.petHealth() and random.randint(1, 5):
             self.EmotionTriggerer("-")
             self.decreaseHealth(1)
-                
+
     def EmotionTriggerer(self, poles):
         """
         poles - parameter for + or - emotion
@@ -318,7 +342,30 @@ class Datahandler:
             self.setEmotion(random.choice(EMOTIONAL_PROGRESSION_POSITIVELY))
 
     def petHealth(self) -> bool:
-        return (self.getBatteryLevel() < 5 or self.getGearMissing() == 10 or self.getOilLevel() < 5) and (not self.getSparkPlug() or not self.getFilter())
+        return (
+            self.getBatteryLevel() < 5
+            or self.getGearMissing() == 10
+            or self.getOilLevel() < 5
+        ) and (not self.getSparkPlug() or not self.getFilter())
+
+    def petAge(self) -> str:
+        times = math.floor(time.time() - self.getFirstLogin())
+
+        seconds = (times) % 60
+        minutes = (times // 60) % 60
+        hours = (times // 60 // 60) % 24
+        days = (times // 60 // 60 // 24)
+        return "{}d - {}h - {}m - {}s".format(
+            days,
+            hours,
+            minutes,
+            seconds,
+        )
+
+    def wipeData(self):
+        os.remove(self.STOREPATH)
+
+
 # data = Datahandler()
 
 

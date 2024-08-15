@@ -12,4 +12,6 @@ def times_cal():
     )
 
 
-print(times_cal())
+t = {"test": "r", "tee": "a"}
+for i in t:
+    print(i)

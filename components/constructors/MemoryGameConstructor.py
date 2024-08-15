@@ -105,3 +105,6 @@ class MemoryGameConstructor:
         self.__init__(self.screen, self.y)
         self.switchAfterWon = True
         self.won = False
+
+    def getHovered(self):
+        return False

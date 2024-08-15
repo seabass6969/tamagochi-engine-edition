@@ -1,5 +1,6 @@
 import pygame
 from dataHandler import dataHandler
+from prerender.rectGradient import GradientRoundedCornerRectangle
 
 
 class Button:
@@ -29,6 +30,9 @@ class Button:
         self.WIDTH = self.screen.get_width()
         self.HEIGHT = self.screen.get_height()
         self.background_color = background_color
+        if type(self.background_color) is list:
+            self.roundedBackground = GradientRoundedCornerRectangle(self.screen, self.background_color, (self.width, self.height), 40, self.x1, self.y1)
+            self.roundedBackground.preRender()
 
     def setXY(self, x1: int | float, y1: int | float):
         self.x1 = x1
@@ -42,12 +46,16 @@ class Button:
                 (self.x1 - 2, self.y1 - 2, self.width + 4, self.height + 4),
                 border_radius=40,
             )
-        pygame.draw.rect(
-            self.screen,
-            self.background_color,
-            (self.x1, self.y1, self.width, self.height),
-            border_radius=40,
-        )
+        if type(self.background_color) is tuple:
+            pygame.draw.rect(
+                self.screen,
+                self.background_color,
+                (self.x1, self.y1, self.width, self.height),
+                border_radius=40,
+            )
+        elif type(self.background_color) is list:
+            self.roundedBackground.draw()
+            
 
         if self.text != "":
             self.screen.blit(

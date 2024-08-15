@@ -1,4 +1,6 @@
 import pygame, os, random
+
+IMAGE_ERROR = pygame.image.load(os.path.join("assets/icon_button", "error.png"))
 IMAGE = {
     "ENGINE": pygame.image.load(os.path.join("assets", "engine.png")),
     "INFO": pygame.image.load(os.path.join("assets/icon_button", "info.png")),
@@ -26,6 +28,7 @@ IMAGE = {
     "GEAR": pygame.image.load(os.path.join("assets/icon_button", "cog.png")),
     "DRAWING": pygame.image.load(os.path.join("assets/icon_button", "drawing.png")),
     "SKULL": pygame.image.load(os.path.join("assets/icon_button", "skull.png")),
+    "QUESTION": pygame.image.load(os.path.join("assets/icon_button", "question.png")),
 }
 
 IMAGE_MEMORY = [
@@ -42,5 +45,22 @@ IMAGE_CELEBRATION = [
     pygame.image.load(os.path.join("assets/celebration", "well_done.png")),
     pygame.image.load(os.path.join("assets/celebration", "excellent.png")),
 ]
+
+
 def get_image_celebration():
     return random.choice(IMAGE_CELEBRATION)
+
+
+IMAGE_MARKETPLACE = {
+    "SPARK_PLUG": pygame.image.load(
+        os.path.join("assets/marketplace_icon", "plug.png")
+    ),
+    "FUEL_FILTER": pygame.image.load(
+        os.path.join("assets/marketplace_icon", "filter.png")
+    ),
+    "GEAR": pygame.image.load(os.path.join("assets/marketplace_icon", "gear.png")),
+    "BATTERY_CHARGER": pygame.image.load(
+        os.path.join("assets/marketplace_icon", "charger.png")
+    ),
+    "OIL": pygame.image.load(os.path.join("assets/marketplace_icon", "oil.png")),
+}

@@ -12,7 +12,7 @@ DATA_TEMPLATE = {
     "oilLevel": 100,
     "level": 0,
     "progression": 0,
-    "gotchiPoint": 0,
+    "gotchiPoint": 100,
     "emotion": "happy",
     "fuel_filter_functional": True,
     "spark_plug_functional": True,
@@ -20,6 +20,11 @@ DATA_TEMPLATE = {
     "gears_missing": 0,
     "last_login": 1722081124,  # using the python time.time()
     "first_login": math.floor(time.time()),
+    "purchased_gears": 0,
+    "purchased_fuel_filters": 0,
+    "purchased_spark_plugs": 0,
+    "purchased_chargers": 0,
+    "purchased_oil": 0,
 }
 SCHEMA = {
     "type": "object",
@@ -37,6 +42,11 @@ SCHEMA = {
         "gears_missing": {"type": "number", "minimum": 0},
         "last_login": {"type": "number"},
         "first_login": {"type": "number"},
+        "purchased_gears": {"type": "number"},
+        "purchased_fuel_filters": {"type": "number"},
+        "purchased_spark_plugs": {"type": "number"},
+        "purchased_chargers": {"type": "number"},
+        "purchased_oil": {"type": "number"},
     },
     "required": [
         "done_tutorial",
@@ -52,6 +62,11 @@ SCHEMA = {
         "gears_missing",
         "last_login",
         "first_login",
+        "purchased_gears",
+        "purchased_fuel_filters",
+        "purchased_spark_plugs",
+        "purchased_chargers",
+        "purchased_oil",
     ],
     "additionalProperties": False,
 }
@@ -92,6 +107,13 @@ class Datahandler:
         self.last_login = DATA_TEMPLATE.get("last_login")
         self.first_login = DATA_TEMPLATE.get("first_login")
 
+        self.purchased_gears = DATA_TEMPLATE.get("purchased_gears")
+        self.purchased_fuel_filters = DATA_TEMPLATE.get("purchased_fuel_filters")
+        self.purchased_spark_plugs = DATA_TEMPLATE.get("purchased_spark_plugs")
+        self.purchased_chargers = DATA_TEMPLATE.get("purchased_chargers")
+        self.purchased_oil = DATA_TEMPLATE.get("purchased_oil")
+
+
         self.STOREPATH = os.path.join("../", "store.json")
         if os.path.exists(self.STOREPATH) == False:
             # if file not exist
@@ -128,6 +150,11 @@ class Datahandler:
             "gears_missing": self.getGearMissing(),
             "last_login": self.getLastLogin(),
             "first_login": self.getFirstLogin(),
+            "purchased_gears": self.purchased_gears,
+            "purchased_fuel_filters": self.purchased_fuel_filters,
+            "purchased_spark_plugs": self.purchased_spark_plugs,
+            "purchased_chargers": self.purchased_chargers,
+            "purchased_oil": self.purchased_oil
         }
         self.FILEOPEN = open(self.STOREPATH, "w")
         self.FILEOPEN.write(json.dumps(self.data))
@@ -146,6 +173,12 @@ class Datahandler:
         self.gears_missing = self.data.get("gears_missing")
         self.last_login = self.data.get("last_login")
         self.first_login = self.data.get("first_login")
+
+        self.purchased_gears = self.data.get("purchased_gears")
+        self.purchased_fuel_filters = self.data.get("purchased_fuel_filters")
+        self.purchased_spark_plugs = self.data.get("purchased_spark_plugs")
+        self.purchased_chargers = self.data.get("purchased_chargers")
+        self.purchased_oil = self.data.get("purchased_oil")
 
     def getDataByID(self, ID):
         self.data.get(ID)
@@ -215,6 +248,11 @@ class Datahandler:
     def getGotchiPoint(self):
         return self.gotchiPoint
 
+    def getGotchiPointRequirementMet(self, price: int) -> bool:
+        if (self.gotchiPoint - price) <= 0:
+            return False
+        else:
+            return True
     def setGotchiPoint(self, gotchiPoint):
         self.gotchiPoint = gotchiPoint
         self.save()
@@ -223,8 +261,8 @@ class Datahandler:
         self.gotchiPoint += by
         self.save()
 
-    def decreaseGotchiPoint(self, gotchiPoint):
-        self.gotchiPoint += by
+    def decreaseGotchiPoint(self, by):
+        self.gotchiPoint -= by
         self.save()
 
     def getEmotion(self):
@@ -361,6 +399,34 @@ class Datahandler:
             minutes,
             seconds,
         )
+    
+    def purchaseItem(self, itemID):
+        match itemID:
+            case "SPARK_PLUG":
+                self.purchased_spark_plugs += 1
+            case "FUEL_FILTER":
+                self.purchased_fuel_filters += 1
+            case "GEAR":
+                self.purchased_gears += 1
+            case "BATTERY_CHARGER":
+                self.purchased_chargers += 10
+            case "OIL":
+                self.purchased_oil += 10
+        self.save()
+
+    def usingItem(self, itemID):
+        match itemID:
+            case "SPARK_PLUG":
+                self.purchased_spark_plugs -= 1
+            case "FUEL_FILTER":
+                self.purchased_fuel_filters -= 1
+            case "GEAR":
+                self.purchased_gears -= 1
+            case "BATTERY_CHARGER":
+                self.purchased_chargers -= 10
+            case "OIL":
+                self.purchased_oil -= 10
+        self.save()
 
     def wipeData(self):
         os.remove(self.STOREPATH)

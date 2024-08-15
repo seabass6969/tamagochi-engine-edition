@@ -1,9 +1,5 @@
-'''
-All constructor must have __init__(), update(), draw(), setVisibility()
-'''
-
 from dataHandler import dataHandler
-class TemplateConstructor:
+class GaragePageConstructor:
     def __init__(self, screen, y1):
         self.screen = screen
         self.components = []

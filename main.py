@@ -1,4 +1,4 @@
-import pygame, sys, random, math
+import pygame, sys, random, math, os 
 from components.displays.text import (
     Text,
     TutorialText,
@@ -22,7 +22,8 @@ from components.interactables.button import (
 from components.constructors import (
     InfoPageConstructor,
     MemoryGameConstructor,
-    MarketplaceConstructor
+    MarketplaceConstructor,
+    GaragePageConstructor
 )
 
 # from dataHandler import dataHandler
@@ -39,6 +40,8 @@ HEIGHT = 700
 # load assets
 if __name__ == "__main__":
 
+    if not os.path.exists("../prerender"):
+        os.makedirs("../prerender")
     screenState = "start"
     transition = False
     pygame.init()
@@ -166,6 +169,8 @@ if __name__ == "__main__":
     )
     # Marketplace Page
     marketplaceConstructor = MarketplaceConstructor.MarketplaceConstructor(screen, nav.height + 10)
+    # Garage Page:
+    garagePageConstructor = GaragePageConstructor.GaragePageConstructor(screen, nav.height + 10)
     # Bug page:
     hurtButton = Button.Button(screen, "hurt", 20, nav.height + 10, 100, 100)
     gotchiButton = Button.Button(screen, "gotchi", 20, nav.height + 20 + 100, 100, 100)
@@ -183,7 +188,7 @@ if __name__ == "__main__":
     startScreen = ScreenState.State(
         screen,
         "start",
-        (115, 115, 115),
+        [(180, 41, 249), (38,197,243)],
         [startButton],
         [tamagotchiText, engineEditionText, byCephasText, animatedText],
     )
@@ -214,9 +219,18 @@ if __name__ == "__main__":
         screen,
         "market",
         (115, 115, 115),
-        [],
         [marketplaceConstructor],
-        optional_update_component=[marketplaceConstructor],
+        [],
+        optional_navbar=True,
+        optional_navbar_options=data,
+        optional_back_button=True,
+    )
+    garageScreen = ScreenState.State(
+        screen,
+        "garage",
+        (115, 115, 115),
+        [garagePageConstructor],
+        [],
         optional_navbar=True,
         optional_navbar_options=data,
         optional_back_button=True,
@@ -248,6 +262,7 @@ if __name__ == "__main__":
         "main": mainScreen,
         "info": infoScreen,
         "market": marketScreen,
+        "garage": garageScreen,
         "memory": memoryScreen,
         "test": testScreen,
     }
@@ -336,6 +351,8 @@ if __name__ == "__main__":
                         data.increaseLevel(10)
                 elif screenState == "memory":
                     memoryGameConstructor.clickRegister()
+                elif screenState == "market":
+                    marketplaceConstructor.clickRegister(data, screenStateTable.get(screenState))
                 # backButton listener
                 if screenStateTable.get(screenState).getBackButtonHover():
                     screenState = ScreenState.changeState(

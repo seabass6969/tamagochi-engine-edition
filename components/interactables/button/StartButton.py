@@ -5,7 +5,7 @@ from constants.asset import IMAGE
 
 class StartButton(Button):
     def __init__(self, screen: pygame.Surface, WIDTH, HEIGHT):
-        super().__init__(screen, "START", WIDTH / 2 - 300 / 2, HEIGHT / 2 - 80 / 2, 300, 80)
+        super().__init__(screen, "START", WIDTH / 2 - 300 / 2, HEIGHT / 2 - 80 / 2, 300, 80, background_color=[(5,201,249), (229,246,27)])
         self.ENGINEIMAGE = IMAGE.get("ENGINE")
         self.ENGINEIMAGE = pygame.transform.scale(self.ENGINEIMAGE, (80, 80))
         self.ENGINEIMAGERECT = self.ENGINEIMAGE.get_rect()

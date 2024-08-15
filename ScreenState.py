@@ -1,4 +1,3 @@
-from multiprocessing.pool import ThreadPool as Pool
 import traceback
 import pygame
 import Alert
@@ -8,6 +7,7 @@ from components.interactables.button import BackButton
 from components.constructors import NavbarConstructor
 from constants import Level
 from dataHandler import dataHandler
+from prerender.colorGradient import GradientColorBackground 
 
 
 DEFAULT_NAVBAR_OPTIONS = {"health": 10, "gotchiPoint": 0, "level": Level.Level(1,0.1)}
@@ -27,7 +27,6 @@ class State:
         optional_navbar_options: dataHandler.Datahandler = ""
     ):
         self.screen = screen
-        self.background_color = background_color
         self.optional_update_component = optional_update_component
         self.components = []
         self.components.extend(components_text)
@@ -50,9 +49,17 @@ class State:
             # self.components.append(self.backbutton)
             self.components_button.append(self.backbutton)
         
+        self.background_color = background_color
+        if type(self.background_color) is list:
+            self.gradientBackgroundColor = GradientColorBackground(self.screen, background_color)
+            self.gradientBackgroundColor.preRender()
+        
 
     def draw(self):
-        self.screen.fill((115, 115, 115))
+        if type(self.background_color) is tuple:
+            self.screen.fill(self.background_color)
+        elif type(self.background_color) is list:
+            self.gradientBackgroundColor.draw()
         for component in self.components:
             component.draw()
         if self.optional_navbar:

@@ -1,5 +1,6 @@
 import pygame, os, random
 
+IMAGE_LOADING = pygame.image.load(os.path.join("assets", "pre_loading.png"))
 IMAGE_ERROR = pygame.image.load(os.path.join("assets/icon_button", "error.png"))
 IMAGE = {
     "ENGINE": pygame.image.load(os.path.join("assets", "engine.png")),

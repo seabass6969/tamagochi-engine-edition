@@ -2,6 +2,7 @@ import os
 import pygame
 import uuid
 from constants.asset import IMAGE_ERROR 
+from prerender.preRenderErase import newCacheReporting
 
 
 class GradientColorBackground:
@@ -25,6 +26,8 @@ class GradientColorBackground:
         pygame.image.save(
             self.colour_rect, os.path.join("../prerender", "{}.png".format(self.UNIQUE_ID))
         )
+
+        newCacheReporting(os.path.join("../prerender", "{}.png".format(self.UNIQUE_ID)))
         self.image = pygame.image.load(os.path.join("../prerender", "{}.png".format(self.UNIQUE_ID)))
 
     def draw(self):

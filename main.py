@@ -1,4 +1,7 @@
 import pygame, sys, random, math, os 
+from prerender.preRenderErase import (
+    cleanCache
+)
 from components.displays.text import (
     Text,
     TutorialText,
@@ -31,7 +34,7 @@ from pygame.locals import *
 import ScreenState
 import Alert
 from constants.Level import Level, levelUnlockCheck, REQUIREMENT
-from constants.asset import IMAGE
+from constants.asset import IMAGE, IMAGE_LOADING
 from dataHandler import dataHandler
 
 
@@ -45,6 +48,8 @@ if __name__ == "__main__":
     screenState = "start"
     transition = False
     pygame.init()
+
+    
     data = dataHandler.Datahandler()
     data.setLastLogin()
 
@@ -54,6 +59,8 @@ if __name__ == "__main__":
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Tamagotchi Engine edition")
     mouseX, mouseY = 0, 0
+
+    screen.blit(IMAGE_LOADING, (0,0))
     startButton = StartButton.StartButton(screen, WIDTH, HEIGHT)
     tamagotchiText = Text.Text(screen, "Tamagotchi", 0, 60, fontSize=50)
     tamagotchiText.verticallyCentered()
@@ -170,7 +177,7 @@ if __name__ == "__main__":
     # Marketplace Page
     marketplaceConstructor = MarketplaceConstructor.MarketplaceConstructor(screen, nav.height + 10)
     # Garage Page:
-    garagePageConstructor = GaragePageConstructor.GaragePageConstructor(screen, nav.height + 10)
+    garagePageConstructor = GaragePageConstructor.GaragePageConstructor(screen, nav.height + 10, data)
     # Bug page:
     hurtButton = Button.Button(screen, "hurt", 20, nav.height + 10, 100, 100)
     gotchiButton = Button.Button(screen, "gotchi", 20, nav.height + 20 + 100, 100, 100)
@@ -198,7 +205,7 @@ if __name__ == "__main__":
     mainScreen = ScreenState.State(
         screen,
         "main",
-        (115, 115, 115),
+        [(165, 194, 193), (30, 108, 142)],
         mainScreenButton,  # all menu button
         [],
         optional_navbar=True,
@@ -207,7 +214,7 @@ if __name__ == "__main__":
     infoScreen = ScreenState.State(
         screen,
         "info",
-        (115, 115, 115),
+        [(255, 202, 166), (248, 101, 148)],
         [],
         [infopageConstructor],
         optional_update_component=[infopageConstructor],
@@ -218,7 +225,7 @@ if __name__ == "__main__":
     marketScreen = ScreenState.State(
         screen,
         "market",
-        (115, 115, 115),
+        [(243, 245, 32), (89, 209, 2)],
         [marketplaceConstructor],
         [],
         optional_navbar=True,
@@ -228,7 +235,7 @@ if __name__ == "__main__":
     garageScreen = ScreenState.State(
         screen,
         "garage",
-        (115, 115, 115),
+        [(94, 55, 25), (178, 164, 150)],
         [garagePageConstructor],
         [],
         optional_navbar=True,
@@ -238,7 +245,7 @@ if __name__ == "__main__":
     memoryScreen = ScreenState.State(
         screen,
         "memory",
-        (115, 115, 115),
+        [(94, 55, 25), (178, 164, 150)],
         [memoryGameConstructor],
         [],
         optional_navbar=True,
@@ -280,12 +287,14 @@ if __name__ == "__main__":
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
-                sys.exit()
                 data.end()
+                cleanCache()
+                sys.exit()
 
                 if data.isDead():
                     data.wipeData()
                     pygame.quit()
+                    cleanCache()
                     sys.exit()
             # mouse event
             elif event.type == MOUSEMOTION:
@@ -353,6 +362,8 @@ if __name__ == "__main__":
                     memoryGameConstructor.clickRegister()
                 elif screenState == "market":
                     marketplaceConstructor.clickRegister(data, screenStateTable.get(screenState))
+                elif screenState == "garage":
+                    garagePageConstructor.clickRegister(data, screenStateTable.get(screenState))
                 # backButton listener
                 if screenStateTable.get(screenState).getBackButtonHover():
                     screenState = ScreenState.changeState(
@@ -387,7 +398,9 @@ if __name__ == "__main__":
                     fpsClock,
                 )
                 memoryGameConstructor.switchAfterWon = False
-
+            if screenState == "main":
+                for button in mainScreenButton:
+                    button.disabled = levelUnlockCheck(data.getLevel().getLevel(), button.level_requirement)
         if data.isDead():
 
             Alert.Alert(
@@ -404,8 +417,10 @@ if __name__ == "__main__":
             data.wipeData()
 
             pygame.quit()
+            cleanCache()
             sys.exit()
 
+        
         # update the display and the target FPS is infinity
         FPS_DISPLAY = True
         if FPS_DISPLAY:

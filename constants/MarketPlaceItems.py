@@ -7,6 +7,7 @@ class MarketPlaceItem:
         self.name = name
         self.ID = ID
         self.price = price
+        
 
 
 marketplaceItems_byID = {

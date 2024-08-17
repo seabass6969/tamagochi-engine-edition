@@ -5,6 +5,7 @@ from constants.emotionConstant import (
     EMOTIONAL_PROGRESSION_NEGATIVELY,
     EMOTIONAL_PROGRESSION_POSITIVELY,
 )
+from constants.MarketPlaceItems import MarketPlaceItem
 
 DATA_TEMPLATE = {
     "done_tutorial": False,
@@ -300,6 +301,10 @@ class Datahandler:
         self.gears_missing = gear
         self.save()
 
+    def decreaseGearMissing(self, by):
+        self.gears_missing -= by 
+        self.save()
+
     def getLastLogin(self):
         return self.last_login
 
@@ -427,6 +432,68 @@ class Datahandler:
             case "OIL":
                 self.purchased_oil -= 10
         self.save()
+    
+
+    def garagePartsRemaining(self, itemID):
+        match itemID:
+            case "SPARK_PLUG":
+                return self.purchased_spark_plugs
+            case "FUEL_FILTER":
+                return self.purchased_fuel_filters
+            case "GEAR":
+                return self.purchased_gears
+            case "BATTERY_CHARGER":
+                return self.purchased_chargers
+            case "OIL":
+                return self.purchased_oil
+                
+    def garagePartsRepairer(self, itemID):
+        match itemID:
+            case "SPARK_PLUG":
+                self.setSparkPlug(True)
+                self.purchased_spark_plugs -= 1
+            case "FUEL_FILTER":
+                self.setFilter(True)
+                self.purchased_fuel_filters -= 1
+            case "GEAR":
+                self.decreaseGearMissing(1)
+                self.purchased_gears -= 1
+            case "BATTERY_CHARGER":
+                if (self.getBatteryLevel() + 10) > 100:
+                    onlyAdd = 100 - self.getBatteryLevel()
+                    self.setBatteryLevel(100)
+                    self.purchased_chargers -= onlyAdd
+                else:
+                    self.setBatteryLevel(self.getBatteryLevel() + 10)
+                    self.purchased_chargers -= 10
+            case "OIL":
+                if (self.getOilLevel() + 10) > 100:
+                    onlyAdd = 100 - self.getOilLevel()
+                    self.setOilLevel(100)
+                    self.purchased_oil -= onlyAdd
+                else:
+                    self.setOilLevel(self.getOilLevel() + 10)
+                    self.purchased_oil -= 10
+                
+        self.save()
+    
+    """
+    True -> item is repaired
+    """
+    def isRepaired(self, itemID):
+        match itemID:
+            case "SPARK_PLUG":
+                return self.getSparkPlug() == True
+            case "FUEL_FILTER":
+                return self.getFilter() == True
+            case "GEAR":
+                return self.getGearMissing() == 0
+            case "BATTERY_CHARGER":
+                return self.getBatteryLevel() == 100
+            case "OIL":
+                return self.getOilLevel() == 100
+                
+            
 
     def wipeData(self):
         os.remove(self.STOREPATH)

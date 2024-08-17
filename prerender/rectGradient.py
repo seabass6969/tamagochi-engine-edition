@@ -2,6 +2,7 @@ import os
 import pygame
 import uuid
 from constants.asset import IMAGE_ERROR
+from prerender.preRenderErase import newCacheReporting
 
 
 class GradientRoundedCornerRectangle:
@@ -31,14 +32,17 @@ class GradientRoundedCornerRectangle:
     def preRender(self):
         for index, color in enumerate(self.colors):
             pygame.draw.line(self.colour_rect, color, (index, 0), (index, 1))
+        self.colour_rect = pygame.transform.rotate(self.colour_rect, 45)
         self.colour_rect = pygame.transform.smoothscale(
             self.colour_rect, self.size
         )  # stretch!
+
 
         pygame.image.save(
             self.colour_rect,
             os.path.join("../prerender", "{}.png".format(self.UNIQUE_ID)),
         )
+        newCacheReporting(os.path.join("../prerender", "{}.png".format(self.UNIQUE_ID)))
         self.original_image = pygame.image.load(
             os.path.join("../prerender", "{}.png".format(self.UNIQUE_ID))
         )

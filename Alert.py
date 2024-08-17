@@ -128,7 +128,7 @@ def Alert(
                 (230, 230, 230),
                 (
                     WIDTH / 2 - 500 / 2,
-                    HEIGHT / 2 - 300 / 2 - quadraticModifier,
+                    HEIGHT / 2 - 300 / 2 + quadraticModifier,
                     500,
                     300,
                 ),
@@ -138,14 +138,14 @@ def Alert(
                 logoImage,
                 (
                     WIDTH / 2 - 500 / 2 + 20,
-                    HEIGHT / 2 - 300 / 2 + 20 - quadraticModifier,
+                    HEIGHT / 2 - 300 / 2 + 20 + quadraticModifier,
                 ),
             )
-            title.y = title_original_y - quadraticModifier
+            title.y = title_original_y + quadraticModifier
             for index,component in enumerate(message_text):
                 component.y = message_original_y[index] + quadraticModifier
             # message_text.y = message_original_y - quadraticModifier
-            ok_button.y1 = ok_button_original_y - quadraticModifier
+            ok_button.y1 = ok_button_original_y + quadraticModifier
             if quadraticShake > 0:
                 quadraticShake -= 1
                 quadraticModifier = math.sqrt(quadraticShake) * 8

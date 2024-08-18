@@ -26,8 +26,10 @@ from components.constructors import (
     InfoPageConstructor,
     MemoryGameConstructor,
     MarketplaceConstructor,
-    GaragePageConstructor
+    GaragePageConstructor,
+    JumpingRopeGameConstructor
 )
+from constants.tutorial import TutorialScreen, footerText, tutorial_text
 
 # from dataHandler import dataHandler
 from pygame.locals import *
@@ -61,6 +63,8 @@ if __name__ == "__main__":
     mouseX, mouseY = 0, 0
 
     screen.blit(IMAGE_LOADING, (0,0))
+
+    # home screen
     startButton = StartButton.StartButton(screen, WIDTH, HEIGHT)
     tamagotchiText = Text.Text(screen, "Tamagotchi", 0, 60, fontSize=50)
     tamagotchiText.verticallyCentered()
@@ -74,18 +78,10 @@ if __name__ == "__main__":
     byCephasText = Text.Text(screen, "by Cephas", 0, 600, fontSize=20)
     byCephasText.verticallyCentered()
 
-    tutorialA = TutorialText.TutorialText(
-        screen,
-        WIDTH,
-        HEIGHT,
-        [
-            "You have a starter pet of",
-            "a basic engine unit.",
-            "Click on the (Infomation) Icon",
-            "(Skip this by pressing space)",
-        ],
-    )
+    # tutorial screen 
+    tutorialScreen = TutorialScreen(screen, footerText, tutorial_text)
 
+    # menu screen 
     infoButton = LogoButton.LogoButton(
         screen, "info", IMAGE.get("INFO"), "Pet Info", 50, 50
     )
@@ -178,6 +174,8 @@ if __name__ == "__main__":
     marketplaceConstructor = MarketplaceConstructor.MarketplaceConstructor(screen, nav.height + 10)
     # Garage Page:
     garagePageConstructor = GaragePageConstructor.GaragePageConstructor(screen, nav.height + 10, data)
+    # JumpingRope Game Page:
+    jumpingRopeGameConstructor = JumpingRopeGameConstructor.JumpingRopeGameConstructor(screen, nav.height + 10)
     # Bug page:
     hurtButton = Button.Button(screen, "hurt", 20, nav.height + 10, 100, 100)
     gotchiButton = Button.Button(screen, "gotchi", 20, nav.height + 20 + 100, 100, 100)
@@ -199,9 +197,9 @@ if __name__ == "__main__":
         [startButton],
         [tamagotchiText, engineEditionText, byCephasText, animatedText],
     )
-    introductionScreen = ScreenState.State(
-        screen, "intro1", (115, 115, 115), [], [tutorialA]
-    )
+    # introductionScreen = ScreenState.State(
+    #     screen, "intro1", (115, 115, 115), [], [tutorialA]
+    # )
     mainScreen = ScreenState.State(
         screen,
         "main",
@@ -252,6 +250,46 @@ if __name__ == "__main__":
         optional_navbar_options=data,
         optional_back_button=True,
     )
+    jumpinggameScreen = ScreenState.State(
+        screen,
+        "jumping",
+        [(94, 55, 25), (178, 164, 150)],
+        [],
+        [],
+        optional_navbar=True,
+        optional_navbar_options=data,
+        optional_back_button=True,
+    )
+    catchinggameScreen = ScreenState.State(
+        screen,
+        "catching",
+        [(94, 55, 25), (178, 164, 150)],
+        [],
+        [],
+        optional_navbar=True,
+        optional_navbar_options=data,
+        optional_back_button=True,
+    )
+    perfectcircleGameScreen = ScreenState.State(
+        screen,
+        "circle",
+        [(94, 55, 25), (178, 164, 150)],
+        [],
+        [],
+        optional_navbar=True,
+        optional_navbar_options=data,
+        optional_back_button=True,
+    )
+    racinggameScreen = ScreenState.State(
+        screen,
+        "racing",
+        [(94, 55, 25), (178, 164, 150)],
+        [],
+        [],
+        optional_navbar=True,
+        optional_navbar_options=data,
+        optional_back_button=True,
+    )
     testScreen = ScreenState.State(
         screen,
         "test",
@@ -265,14 +303,19 @@ if __name__ == "__main__":
     # hash table that stores the key value of the name of the state to the State
     screenStateTable = {
         "start": startScreen,
-        "intro1": introductionScreen,
+        # "intro1": introductionScreen,
         "main": mainScreen,
         "info": infoScreen,
         "market": marketScreen,
         "garage": garageScreen,
         "memory": memoryScreen,
+        "jumping": jumpinggameScreen,
+        "catching": catchinggameScreen,
+        "circle": perfectcircleGameScreen,
+        "racing": racinggameScreen,
         "test": testScreen,
     }
+    screenStateTable.update(tutorialScreen.generatedDict)
     for component in screenStateTable.get(screenState).components:
         component.setVisibility(True)
 
@@ -313,7 +356,7 @@ if __name__ == "__main__":
                     else:
                         screenState = ScreenState.changeState(
                             True,
-                            screenStateTable.get("intro1"),
+                            screenStateTable.get("intro0"),
                             screenStateTable.get(screenState),
                             screen,
                             fpsClock,
@@ -378,16 +421,26 @@ if __name__ == "__main__":
                 pass
             elif event.type == KEYDOWN:
                 # place the key event
-                if screenState == "intro1":
-                    if tutorialA.awaitSkip(event.key) == True:
-                        screenState = ScreenState.changeState(
-                            True,
-                            screenStateTable.get("main"),
-                            screenStateTable.get(screenState),
-                            screen,
-                            fpsClock,
-                        )
-                        data.setDoneTutorial(True)
+                if screenState[:5] == "intro":
+                    if tutorialScreen.awaitSkip(event.key) == True:
+                        if tutorialScreen.reachedEnds() == False:
+                            tutorialScreen.introIncrement += 1
+                            screenState = ScreenState.changeState(
+                                True,
+                                screenStateTable.get("intro{}".format(tutorialScreen.introIncrement)),
+                                screenStateTable.get(screenState),
+                                screen,
+                                fpsClock,
+                            )
+                        else:
+                            screenState = ScreenState.changeState(
+                                True,
+                                screenStateTable.get("main"),
+                                screenStateTable.get(screenState),
+                                screen,
+                                fpsClock,
+                            )
+                            data.setDoneTutorial(True)
 
             if screenState == "memory" and memoryGameConstructor.switchAfterWon:
                 screenState = ScreenState.changeState(
@@ -400,7 +453,8 @@ if __name__ == "__main__":
                 memoryGameConstructor.switchAfterWon = False
             if screenState == "main":
                 for button in mainScreenButton:
-                    button.disabled = levelUnlockCheck(data.getLevel().getLevel(), button.level_requirement)
+                    if button.level_requirement != 0:
+                        button.disabled = levelUnlockCheck(data.getLevel().getLevel(), button.level_requirement)
         if data.isDead():
 
             Alert.Alert(

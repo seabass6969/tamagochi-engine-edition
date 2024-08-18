@@ -7,11 +7,11 @@ def multiplication(a: float | int, b: float | int) -> float | int:
 
 
 class TutorialText:
-    def __init__(self, screen: pygame.Surface, WIDTH, HEIGHT, text: [str]):
+    def __init__(self, screen: pygame.Surface, text: [str]):
         self.SKIPBUTTON = K_SPACE
         self.screen = screen
-        self.WIDTH = WIDTH
-        self.HEIGHT = HEIGHT
+        self.WIDTH = screen.get_width() 
+        self.HEIGHT = screen.get_height()
         self.text = text
 
         self.visible = False

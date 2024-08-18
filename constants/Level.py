@@ -1,6 +1,6 @@
 import math
 
-REQUIREMENT = {"JUMPING_ROPE_GAME": 2, "CATCH_GAME": 5, "RACING_GAME": 10, "CIRCLE_GAME": 7}
+REQUIREMENT = {"JUMPING_ROPE_GAME": 2, "CATCH_GAME": 3, "RACING_GAME": 5, "CIRCLE_GAME": 4}
 
 
 def levelUnlockCheck(level: int, requirement: int) -> bool:

@@ -254,8 +254,9 @@ if __name__ == "__main__":
         screen,
         "jumping",
         [(94, 55, 25), (178, 164, 150)],
+        [jumpingRopeGameConstructor],
         [],
-        [],
+        optional_update_component=[jumpingRopeGameConstructor],
         optional_navbar=True,
         optional_navbar_options=data,
         optional_back_button=True,
@@ -303,7 +304,6 @@ if __name__ == "__main__":
     # hash table that stores the key value of the name of the state to the State
     screenStateTable = {
         "start": startScreen,
-        # "intro1": introductionScreen,
         "main": mainScreen,
         "info": infoScreen,
         "market": marketScreen,
@@ -441,20 +441,26 @@ if __name__ == "__main__":
                                 fpsClock,
                             )
                             data.setDoneTutorial(True)
-
-            if screenState == "memory" and memoryGameConstructor.switchAfterWon:
-                screenState = ScreenState.changeState(
-                    True,
-                    screenStateTable.get("main"),
-                    screenStateTable.get(screenState),
-                    screen,
-                    fpsClock,
-                )
-                memoryGameConstructor.switchAfterWon = False
-            if screenState == "main":
-                for button in mainScreenButton:
-                    if button.level_requirement != 0:
-                        button.disabled = levelUnlockCheck(data.getLevel().getLevel(), button.level_requirement)
+                elif screenState == "jumping":
+                    jumpingRopeGameConstructor.keyRegister(event.key, True)
+            elif event.type == KEYUP:
+                if screenState == "jumping":
+                    jumpingRopeGameConstructor.keyRegister(event.key, False)
+                    
+                
+        if screenState == "memory" and memoryGameConstructor.switchAfterWon:
+            screenState = ScreenState.changeState(
+                True,
+                screenStateTable.get("main"),
+                screenStateTable.get(screenState),
+                screen,
+                fpsClock,
+            )
+            memoryGameConstructor.switchAfterWon = False
+        if screenState == "main":
+            for button in mainScreenButton:
+                if button.level_requirement != 0:
+                    button.disabled = levelUnlockCheck(data.getLevel().getLevel(), button.level_requirement)
         if data.isDead():
 
             Alert.Alert(

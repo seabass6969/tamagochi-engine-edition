@@ -16,7 +16,7 @@ class NavbarConstructor:
         self.level = level
 
         self.nav = Navbar.Navbar(
-            self.screen, self.screen.get_width(), self.screen.get_height()
+            self.screen
         )
         self.healthText = Text.Text(
             screen,

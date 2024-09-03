@@ -69,4 +69,5 @@ IMAGE_MARKETPLACE = {
 IMAGE_ROPE_GAME = {
     "ROPE": pygame.image.load(os.path.join("assets/rope_game", "base_rope_texture.png")),
     "PLATFORM": pygame.image.load(os.path.join("assets/rope_game", "platform.png")),
+    "SPIKE": pygame.image.load(os.path.join("assets/rope_game", "spike.png")),
 }

@@ -8,12 +8,13 @@ class Character:
         self.screen = screen
         self.y= y
         self.x = x
-        self.engine_image = IMAGE.get("ENGINE")
+        self.engine_image = pygame.surface.Surface((50,50))
+        self.engine_image.fill((0,0,139))
         
-        self.engine_image= pygame.transform.scale(self.engine_image, (80, 80))
         self.engine_rect = self.engine_image.get_rect()
         self.engine_rect.topleft = (self.x, self.y)
         self.engine_mask = pygame.mask.from_surface(self.engine_image)
+        self.engine_mask_duplication = pygame.mask.from_surface(self.engine_image)
         self.overlap = False
         self.keys = []
 
@@ -24,10 +25,10 @@ class Character:
         pass
 
     def keyRegister(self, key, down):
-        if down == True :
-            self.keys.append(key)
-        else:
-            self.keys.remove(key)
+        # if down == True :
+        #     self.keys.append(key)
+        # else:
+        #     self.keys.remove(key)
         pass
 
     def update(self, x, y, data: dataHandler.Datahandler):

@@ -2,15 +2,15 @@ import pygame
 
 
 class Navbar:
-    def __init__(self, screen: pygame.Surface, WIDTH, HEIGHT):
+    def __init__(self, screen: pygame.Surface):
         self.screen = screen
-        self.WIDTH = WIDTH
-        self.HEIGHT = HEIGHT
+        self.WIDTH = self.screen.get_width()
+        self.HEIGHT = self.screen.get_height()
         self.height = 100
         
 
     def draw(self):
-        
+    
         pygame.draw.rect(
             self.screen,
             (217, 217, 217),

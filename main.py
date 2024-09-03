@@ -27,7 +27,8 @@ from components.constructors import (
     MemoryGameConstructor,
     MarketplaceConstructor,
     GaragePageConstructor,
-    JumpingRopeGameConstructor
+    JumpingRopeGameConstructor,
+    CatchingConstructor
 )
 from constants.tutorial import TutorialScreen, footerText, tutorial_text
 
@@ -145,7 +146,7 @@ if __name__ == "__main__":
         50,
         50,
     )
-    nav = Navbar.Navbar(screen, WIDTH, HEIGHT)
+    nav = Navbar.Navbar(screen)
     mainScreenButton = [
         infoButton,
         marketButton,
@@ -153,9 +154,9 @@ if __name__ == "__main__":
         memorygameButton,
         jumpinggameButton,
         catchinggameButton,
-        perfectcircleGameButton,
-        racinggameButton,
-        testButton,
+        # perfectcircleGameButton,
+        # racinggameButton,
+        # testButton,
     ]
     Grid.Grid_adjuster(
         mainScreenButton,
@@ -176,6 +177,8 @@ if __name__ == "__main__":
     garagePageConstructor = GaragePageConstructor.GaragePageConstructor(screen, nav.height + 10, data)
     # JumpingRope Game Page:
     jumpingRopeGameConstructor = JumpingRopeGameConstructor.JumpingRopeGameConstructor(screen, nav.height + 10)
+    # catching Game page:
+    catchinggameConstructor = CatchingConstructor.CatchingConstructor(screen, nav.height + 10)
     # Bug page:
     hurtButton = Button.Button(screen, "hurt", 20, nav.height + 10, 100, 100)
     gotchiButton = Button.Button(screen, "gotchi", 20, nav.height + 20 + 100, 100, 100)
@@ -257,20 +260,21 @@ if __name__ == "__main__":
         [jumpingRopeGameConstructor],
         [],
         optional_update_component=[jumpingRopeGameConstructor],
-        optional_navbar=True,
-        optional_navbar_options=data,
+        optional_navbar=False,
+        # optional_navbar_options=data,
         optional_back_button=True,
     )
     catchinggameScreen = ScreenState.State(
         screen,
         "catching",
         [(94, 55, 25), (178, 164, 150)],
-        [],
+        [catchinggameConstructor],
         [],
         optional_navbar=True,
         optional_navbar_options=data,
-        optional_back_button=True,
+        optional_back_button=True
     )
+    
     perfectcircleGameScreen = ScreenState.State(
         screen,
         "circle",
@@ -409,10 +413,11 @@ if __name__ == "__main__":
                     garagePageConstructor.clickRegister(data, screenStateTable.get(screenState))
                 # backButton listener
                 if screenStateTable.get(screenState).getBackButtonHover():
+                    previous = screenState
                     screenState = ScreenState.changeState(
                         True,
                         screenStateTable.get("main"),
-                        screenStateTable.get(screenState),
+                        screenStateTable.get(previous),
                         screen,
                         fpsClock,
                     )
@@ -482,7 +487,7 @@ if __name__ == "__main__":
 
         
         # update the display and the target FPS is infinity
-        FPS_DISPLAY = True
+        FPS_DISPLAY = False
         if FPS_DISPLAY:
             FONT = pygame.font.SysFont("Comic Sans MS", 20)
             TEXT = FONT.render(str(math.floor(fpsClock.get_fps())), False, (0, 0, 0))

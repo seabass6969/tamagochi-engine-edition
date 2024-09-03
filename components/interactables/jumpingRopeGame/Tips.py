@@ -15,7 +15,7 @@ class Tips:
         self.TEXT_Backward = Text(self.screen, "Backward", 0, 0)
         self.TEXT_SPACE = Keys(self.screen, "", 0, 0)
         self.TEXT_JUMP = Text(self.screen, "Jump", 0, 0)
-        self.TEXT_GOAL = Text(self.screen, "Goal: reach", 0, 0)
+        self.TEXT_GOAL = Text(self.screen, "Goal: reached the green pad", 0, 0)
         self.items = [
             self.TEXT_W,
             self.TEXT_Forward,

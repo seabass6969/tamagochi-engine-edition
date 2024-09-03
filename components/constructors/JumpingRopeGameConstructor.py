@@ -32,7 +32,7 @@ class JumpingRopeGameConstructor:
         self.spikes.append(Spike(screen, 100, self.y + 80, 65))
 
         self.crushers = []
-        self.crushers.append(Crusher(screen, 150, self.y))
+        # self.crushers.append(Crusher(screen, 150, self.y))
 
         self.character = Character(screen, 10, self.y + 20)
         self.winplatform = WinPlatform(screen, 170, self.y + 80)
